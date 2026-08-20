@@ -1,4 +1,4 @@
-# tamiz72 — paired EN/ES everyday-tasks dataset
+# tamiz — paired EN/ES everyday-tasks dataset
 
 Benchmark dataset for evaluating local/open LLMs (≤32 GB VRAM) on everyday, non-coding
 tasks, with the **same test items in English and Spanish** to measure the ES↔EN quality gap
