@@ -3,9 +3,11 @@
 
 Fully offline — reads results/raw/**/*.jsonl, joins to data/*.jsonl, scores.
 """
+
 import json
 import os
 import re
+import statistics
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -13,7 +15,9 @@ from pathlib import Path
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 RAW_DIR = Path(__file__).resolve().parent.parent / "results" / "raw"
 SCORES_PATH = Path(__file__).resolve().parent.parent / "results" / "scores.json"
-SITE_SCORES_PATH = Path(__file__).resolve().parent.parent / "site" / "results" / "scores.json"
+SITE_SCORES_PATH = (
+    Path(__file__).resolve().parent.parent / "site" / "results" / "scores.json"
+)
 
 SCORABLE_TASKS = ("qa_openbook", "commonsense_copa", "categorize", "translate")
 
@@ -32,7 +36,9 @@ def load_dataset(task: str, lang: str) -> dict[str, dict]:
     return rows
 
 
-def extract_mc_letter(output: str, choices: dict, valid_letters: list[str]) -> str | None:
+def extract_mc_letter(
+    output: str, choices: dict, valid_letters: list[str]
+) -> str | None:
     """Extract the chosen letter/number from model output for MC tasks."""
     s = output.strip()
     # strip markdown and trailing punctuation
@@ -81,7 +87,9 @@ def extract_categorize(output: str, labels: set[str]) -> str | None:
     return None
 
 
-def score_exact_match(rows: list[dict], dataset: dict[str, dict]) -> tuple[float, int, int]:
+def score_exact_match(
+    rows: list[dict], dataset: dict[str, dict]
+) -> tuple[float, int, int]:
     """Score exact-match tasks. Returns (score_pct, n, format_failures)."""
     matches = 0
     n = 0
@@ -121,6 +129,7 @@ def score_exact_match(rows: list[dict], dataset: dict[str, dict]) -> tuple[float
 def score_chrf(rows: list[dict], dataset: dict[str, dict]) -> tuple[float, int, int]:
     """Score translate with chrF++. Returns (score, n, format_failures)."""
     from sacrebleu.metrics import CHRF
+
     chrf = CHRF(word_order=2)
 
     hypotheses = []
@@ -141,7 +150,7 @@ def score_chrf(rows: list[dict], dataset: dict[str, dict]) -> tuple[float, int, 
         # strip leading translation labels
         for prefix in ("Traducción:", "Translation:", "Traduccion:"):
             if output.startswith(prefix):
-                output = output[len(prefix):].strip()
+                output = output[len(prefix) :].strip()
         hypotheses.append(output)
         references.append(ds_row["answer"])
 
@@ -162,11 +171,10 @@ def main():
     for provider_dir in sorted(RAW_DIR.iterdir()):
         if not provider_dir.is_dir():
             continue
-        # provider__model-slug
-        parts = provider_dir.name.split("__", 1)
-        if len(parts) != 2:
-            continue
-        provider, model_slug = parts
+        if "__" in provider_dir.name:
+            provider, model_slug = provider_dir.name.split("__", 1)
+        else:
+            provider, model_slug = "lmstudio", provider_dir.name
 
         for fpath in sorted(provider_dir.glob("*.jsonl")):
             stem = fpath.stem  # e.g. "qa_openbook.en"
@@ -188,13 +196,44 @@ def main():
             if not raw_rows:
                 continue
 
-            # determine model id from first row
             model_id = raw_rows[0].get("model", model_slug)
+            quantization = raw_rows[0].get("quantization", "unknown")
+            if not isinstance(quantization, str) or not quantization:
+                quantization = "unknown"
+            else:
+                quantization = quantization.lower()
 
-            # load ground truth
+            tps_vals = []
+            lat_vals = []
+            total_prompt = 0
+            total_completion = 0
+            for rec in raw_rows:
+                lat = rec.get("latency_ms")
+                if isinstance(lat, int):
+                    lat_vals.append(lat)
+                ct = rec.get("completion_tokens")
+                pt = rec.get("prompt_tokens")
+                if isinstance(pt, int):
+                    total_prompt += pt
+                if isinstance(ct, int):
+                    total_completion += ct
+                tps = rec.get("tokens_per_second")
+                if (
+                    tps is None
+                    and isinstance(ct, int)
+                    and isinstance(lat, int)
+                    and lat > 0
+                ):
+                    tps = round(ct * 1000 / lat, 2)
+                if isinstance(tps, (int, float)):
+                    tps_vals.append(float(tps))
+
+            avg_tps = round(sum(tps_vals) / len(tps_vals), 2) if tps_vals else None
+            median_tps = round(statistics.median(tps_vals), 2) if tps_vals else None
+            avg_lat = round(sum(lat_vals) / len(lat_vals), 1) if lat_vals else None
+
             dataset = load_dataset(task, lang)
 
-            # score
             if task == "translate":
                 score, n, ff = score_chrf(raw_rows, dataset)
                 metric = "chrf++"
@@ -204,16 +243,24 @@ def main():
 
             ff_rate = round(ff / n * 100, 1) if n else 0.0
 
-            records.append({
-                "provider": provider,
-                "model": model_id,
-                "task": task,
-                "lang": lang,
-                "metric": metric,
-                "score": score,
-                "n": n,
-                "format_failure_rate": ff_rate,
-            })
+            records.append(
+                {
+                    "provider": provider,
+                    "model": model_id,
+                    "quantization": quantization,
+                    "task": task,
+                    "lang": lang,
+                    "metric": metric,
+                    "score": score,
+                    "n": n,
+                    "format_failure_rate": ff_rate,
+                    "avg_tokens_per_second": avg_tps,
+                    "median_tokens_per_second": median_tps,
+                    "avg_latency_ms": avg_lat,
+                    "total_prompt_tokens": total_prompt,
+                    "total_completion_tokens": total_completion,
+                }
+            )
 
     scores = {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),

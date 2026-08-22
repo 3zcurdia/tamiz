@@ -1,19 +1,9 @@
 # tamiz — paired EN/ES everyday-tasks dataset
+> YAPMB: Yet Another Poor Man's Benchmark
 
 Benchmark dataset for evaluating local/open LLMs (≤32 GB VRAM) on everyday, non-coding
 tasks, with the **same test items in English and Spanish** to measure the ES↔EN quality gap
 for ordinary users in Latin America and Spanish-speaking countries.
-
-## Build
-
-```bash
-python3 -m venv .venv
-.venv/bin/pip install "datasets==3.6.0" pandas pyarrow
-.venv/bin/python scripts/build_dataset.py
-```
-
-Output goes to `data/<task>.<lang>.jsonl`. Sampling is seeded (`random.seed(72)`) so
-builds are reproducible.
 
 ## Tasks
 

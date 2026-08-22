@@ -5,12 +5,16 @@ import { useState } from "react";
 interface ScoreRecord {
   provider: string;
   model: string;
+  quantization: string;
   task: string;
   lang: string;
   metric: string;
   score: number;
   n: number;
   format_failure_rate: number;
+  avg_tokens_per_second: number | null;
+  median_tokens_per_second: number | null;
+  avg_latency_ms: number | null;
 }
 
 type SortKey = keyof ScoreRecord;
@@ -56,6 +60,7 @@ export function ScoresTable({ records }: { records: ScoreRecord[] }) {
         <thead>
           <tr>
             <th onClick={() => handleSort("model")}>Model{arrow("model")}</th>
+            <th onClick={() => handleSort("quantization")}>Quant{arrow("quantization")}</th>
             <th onClick={() => handleSort("task")}>Task{arrow("task")}</th>
             <th onClick={() => handleSort("lang")}>Lang{arrow("lang")}</th>
             <th onClick={() => handleSort("metric")}>Metric{arrow("metric")}</th>
@@ -64,18 +69,23 @@ export function ScoresTable({ records }: { records: ScoreRecord[] }) {
             <th onClick={() => handleSort("format_failure_rate")}>
               FF%{arrow("format_failure_rate")}
             </th>
+            <th onClick={() => handleSort("avg_tokens_per_second")}>tok/s{arrow("avg_tokens_per_second")}</th>
+            <th onClick={() => handleSort("avg_latency_ms")}>lat ms{arrow("avg_latency_ms")}</th>
           </tr>
         </thead>
         <tbody>
           {sorted.map((r, i) => (
             <tr key={i}>
               <td className="model-cell">{r.model}</td>
+              <td>{r.quantization ?? "unknown"}</td>
               <td>{TASK_LABELS[r.task] || r.task}</td>
               <td>{r.lang.toUpperCase()}</td>
               <td>{r.metric}</td>
               <td className="score-cell">{r.score.toFixed(1)}</td>
               <td>{r.n}</td>
               <td>{r.format_failure_rate.toFixed(1)}</td>
+              <td>{r.avg_tokens_per_second != null ? r.avg_tokens_per_second.toFixed(1) : "—"}</td>
+              <td>{r.avg_latency_ms != null ? r.avg_latency_ms.toFixed(0) : "—"}</td>
             </tr>
           ))}
         </tbody>

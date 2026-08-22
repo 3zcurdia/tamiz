@@ -15,12 +15,16 @@ const TASK_LABELS: Record<string, string> = {
 interface ScoreRecord {
   provider: string;
   model: string;
+  quantization: string;
   task: string;
   lang: string;
   metric: string;
   score: number;
   n: number;
   format_failure_rate: number;
+  avg_tokens_per_second: number | null;
+  median_tokens_per_second: number | null;
+  avg_latency_ms: number | null;
 }
 
 export default function Home() {

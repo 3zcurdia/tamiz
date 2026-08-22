@@ -9,10 +9,13 @@ Usage:
         --lang en|es|all \
         [--limit N] [--concurrency 1]
 """
+
 import argparse
 import json
 import os
 import re
+import shutil
+import subprocess
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -41,6 +44,121 @@ MAX_TOKENS = {
 
 def model_slug(model_id: str) -> str:
     return re.sub(r"[/:\s]+", "-", model_id.lower())
+
+
+def infer_quantization(model_id: str, raw: dict | None) -> str:
+    if raw:
+        for k in ("quantization", "quant", "precision", "format", "backend"):
+            v = raw.get(k)
+            if isinstance(v, str) and v.strip():
+                return v.strip().lower()
+    s = model_id.lower()
+    m = re.search(
+        r"q\d+_k(_[sml])?|iq\d+_\w+|q\d+|fp16|bf16|f16|int4|int8|4bit|8bit|awq|gptq|gguf|mlx|exl2",
+        s,
+    )
+    if m:
+        return m.group(0).lower()
+    return "unknown"
+
+
+def fetch_raw_model(base_url: str, model_id: str | None) -> dict | None:
+    try:
+        r = requests.get(f"{base_url}/models", timeout=10)
+        r.raise_for_status()
+        data = r.json().get("data", [])
+        if not data:
+            return None
+        if model_id:
+            for m in data:
+                if m.get("id") == model_id:
+                    return m
+        return data[0]
+    except Exception:
+        return None
+
+
+def _lms_bin() -> str | None:
+    for cand in [shutil.which("lms"), os.path.expanduser("~/.lmstudio/bin/lms")]:
+        if cand and os.path.exists(cand):
+            return cand
+    return None
+
+
+def _is_model_loaded(model: str, base_url: str) -> bool:
+    try:
+        api_url = base_url.replace("/v1", "/api/v0")
+        r = requests.get(f"{api_url}/models", timeout=5)
+        r.raise_for_status()
+        for m in r.json().get("data", []):
+            if m.get("id") == model and m.get("state") == "loaded":
+                return True
+    except Exception:
+        pass
+    lms = _lms_bin()
+    if lms:
+        try:
+            pr = subprocess.run(
+                [lms, "ps", "--json"], capture_output=True, text=True, timeout=10
+            )
+            if pr.returncode == 0 and pr.stdout.strip():
+                data = json.loads(pr.stdout)
+                for m in data if isinstance(data, list) else []:
+                    for k in ("key", "modelKey", "identifier", "id", "path"):
+                        if m.get(k) == model:
+                            return True
+                    if model in " ".join(str(v) for v in m.values()):
+                        return True
+        except Exception:
+            pass
+    return False
+
+
+def ensure_model_loaded(model: str, base_url: str, timeout: int = 600) -> bool:
+    if _is_model_loaded(model, base_url):
+        return True
+    lms = _lms_bin()
+    if not lms:
+        print(
+            f"Model '{model}' not loaded and lms CLI not found — cannot auto-load.",
+            file=sys.stderr,
+        )
+        return False
+    print(f"Model '{model}' not loaded — running: lms load {model} -y", file=sys.stderr)
+    try:
+        proc = subprocess.run([lms, "load", model, "-y"], timeout=timeout)
+        if proc.returncode != 0:
+            print(f"lms load exited with {proc.returncode}", file=sys.stderr)
+    except subprocess.TimeoutExpired:
+        print(f"lms load timed out after {timeout}s", file=sys.stderr)
+        return False
+    except Exception as e:
+        print(f"lms load failed: {e}", file=sys.stderr)
+        return False
+    for _ in range(30):
+        if _is_model_loaded(model, base_url):
+            print(f"Model '{model}' is now loaded.", file=sys.stderr)
+            return True
+        time.sleep(2)
+    try:
+        r = requests.post(
+            f"{base_url}/chat/completions",
+            json={
+                "model": model,
+                "messages": [{"role": "user", "content": "hi"}],
+                "max_tokens": 1,
+            },
+            timeout=20,
+        )
+        if r.status_code < 400 or "No models loaded" not in r.text:
+            return True
+    except Exception:
+        pass
+    print(
+        f"Model '{model}' still not reported as loaded after lms load — will try requests anyway.",
+        file=sys.stderr,
+    )
+    return False
 
 
 def preflight(base_url: str) -> str:
@@ -110,10 +228,12 @@ def load_done_ids(output_path: Path) -> set[str]:
     return ids
 
 
-def call_api(base_url: str, prompt: str, max_tokens: int, is_apple: bool) -> dict:
+def call_api(
+    base_url: str, prompt: str, max_tokens: int, is_apple: bool, model: str = ""
+) -> dict:
     """Call the chat completions API. Returns dict with output/error/timing."""
     payload = {
-        "model": "",  # filled by caller
+        "model": model,
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0,
         "seed": 72,
@@ -139,35 +259,68 @@ def call_api(base_url: str, prompt: str, max_tokens: int, is_apple: bool) -> dic
         if r.status_code >= 400:
             msg = r.text[:500]
             if is_apple and ("context" in msg.lower() or "length" in msg.lower()):
-                return {"error": "context_overflow", "output": msg, "latency_ms": latency_ms,
-                        "prompt_tokens": None, "completion_tokens": None}
+                return {
+                    "error": "context_overflow",
+                    "output": msg,
+                    "latency_ms": latency_ms,
+                    "prompt_tokens": None,
+                    "completion_tokens": None,
+                    "tokens_per_second": None,
+                }
             if is_apple and "guardrail" in msg.lower():
-                return {"error": "guardrail", "output": msg, "latency_ms": latency_ms,
-                        "prompt_tokens": None, "completion_tokens": None}
-            return {"error": "api_error", "output": msg, "latency_ms": latency_ms,
-                    "prompt_tokens": None, "completion_tokens": None}
+                return {
+                    "error": "guardrail",
+                    "output": msg,
+                    "latency_ms": latency_ms,
+                    "prompt_tokens": None,
+                    "completion_tokens": None,
+                    "tokens_per_second": None,
+                }
+            return {
+                "error": "api_error",
+                "output": msg,
+                "latency_ms": latency_ms,
+                "prompt_tokens": None,
+                "completion_tokens": None,
+                "tokens_per_second": None,
+            }
 
         data = r.json()
         choice = data["choices"][0]
         text = choice.get("message", {}).get("content", "")
         usage = data.get("usage", {})
+        prompt_tokens = usage.get("prompt_tokens")
+        completion_tokens = usage.get("completion_tokens")
+        tps = (
+            round(completion_tokens * 1000 / latency_ms, 2)
+            if isinstance(completion_tokens, int) and latency_ms > 0
+            else None
+        )
         return {
             "error": None,
             "output": text,
             "latency_ms": latency_ms,
-            "prompt_tokens": usage.get("prompt_tokens"),
-            "completion_tokens": usage.get("completion_tokens"),
+            "prompt_tokens": prompt_tokens,
+            "completion_tokens": completion_tokens,
+            "tokens_per_second": tps,
         }
     except Exception as e:
         latency_ms = int((time.perf_counter() - t0) * 1000)
-        return {"error": "api_error", "output": str(e), "latency_ms": latency_ms,
-                "prompt_tokens": None, "completion_tokens": None}
+        return {
+            "error": "api_error",
+            "output": str(e),
+            "latency_ms": latency_ms,
+            "prompt_tokens": None,
+            "completion_tokens": None,
+            "tokens_per_second": None,
+        }
 
 
 def run_task(
     provider: str,
     base_url: str,
     model: str,
+    quantization: str,
     task: str,
     lang: str,
     limit: int | None,
@@ -183,7 +336,8 @@ def run_task(
     if limit:
         rows = rows[:limit]
 
-    out_dir = RAW_DIR / f"{provider}__{model_slug(model)}"
+    slug = model_slug(model)
+    out_dir = RAW_DIR / (f"apple__{slug}" if provider == "apple" else slug)
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / f"{task}.{lang}.jsonl"
 
@@ -200,7 +354,11 @@ def run_task(
 
     def process_row(row: dict) -> dict:
         prompt = build_prompt(row, label_list, lang)
-        result = call_api(base_url, prompt, max_tok, is_apple)
+        result = call_api(base_url, prompt, max_tok, is_apple, model)
+        if result["error"] == "api_error" and "No models loaded" in result["output"]:
+            ensure_model_loaded(model, base_url)
+            time.sleep(3)
+            result = call_api(base_url, prompt, max_tok, is_apple, model)
         return {
             "id": row["id"],
             "pair_id": row["pair_id"],
@@ -208,11 +366,13 @@ def run_task(
             "lang": lang,
             "provider": provider,
             "model": model,
+            "quantization": quantization,
             "output": result["output"],
             "error": result["error"],
             "latency_ms": result["latency_ms"],
             "prompt_tokens": result["prompt_tokens"],
             "completion_tokens": result["completion_tokens"],
+            "tokens_per_second": result["tokens_per_second"],
         }
 
     with open(out_path, "a", encoding="utf-8") as fout:
@@ -221,6 +381,8 @@ def run_task(
                 rec = process_row(row)
                 # retry once on generic api_error
                 if rec["error"] == "api_error":
+                    if "No models loaded" in rec["output"]:
+                        ensure_model_loaded(model, base_url)
                     time.sleep(5)
                     rec = process_row(row)
                 fout.write(json.dumps(rec, ensure_ascii=False) + "\n")
@@ -233,6 +395,8 @@ def run_task(
                 for fut in as_completed(futures):
                     rec = fut.result()
                     if rec["error"] == "api_error":
+                        if "No models loaded" in rec["output"]:
+                            ensure_model_loaded(model, base_url)
                         time.sleep(5)
                         rec = process_row(futures[fut])
                     fout.write(json.dumps(rec, ensure_ascii=False) + "\n")
@@ -249,10 +413,19 @@ def collect_labels(task: str, lang: str) -> list[str]:
 
 def main():
     parser = argparse.ArgumentParser(description="Run benchmark against a local model")
-    parser.add_argument("--provider", required=True, choices=PROVIDERS.keys())
-    parser.add_argument("--model", default=None, help="Model id (for apple, defaults to the one from /v1/models)")
-    parser.add_argument("--task", required=True, choices=list(TASKS) + ["all"])
-    parser.add_argument("--lang", required=True, choices=list(LANGS) + ["all"])
+    parser.add_argument("--provider", default="lmstudio", choices=PROVIDERS.keys())
+    parser.add_argument(
+        "--model",
+        default=None,
+        help="Model id (for apple, defaults to the one from /v1/models)",
+    )
+    parser.add_argument(
+        "--quantization",
+        default=None,
+        help="Quantization label, e.g. q4_k_m, bf16 (auto-detected if omitted)",
+    )
+    parser.add_argument("--task", default="all", choices=list(TASKS) + ["all"])
+    parser.add_argument("--lang", default="all", choices=list(LANGS) + ["all"])
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--concurrency", type=int, default=1)
     args = parser.parse_args()
@@ -264,14 +437,23 @@ def main():
         model = preflight(base_url)
         print(f"Auto-detected model: {model}")
 
-    # preflight
-    preflight(base_url)
+    if args.provider == "lmstudio":
+        ensure_model_loaded(model, base_url)
+    else:
+        preflight(base_url)
+
+    if args.quantization:
+        quantization = args.quantization.strip().lower()
+    else:
+        raw_model = fetch_raw_model(base_url, model)
+        quantization = infer_quantization(model, raw_model)
 
     tasks = TASKS if args.task == "all" else (args.task,)
     langs = LANGS if args.lang == "all" else (args.lang,)
 
     print(f"Provider: {args.provider} ({base_url})")
     print(f"Model: {model}")
+    print(f"Quantization: {quantization}")
     print(f"Tasks: {tasks}")
     print(f"Languages: {langs}")
     print()
@@ -279,8 +461,17 @@ def main():
     for task in tasks:
         for lang in langs:
             label_list = collect_labels(task, lang) if task == "categorize" else None
-            run_task(args.provider, base_url, model, task, lang, args.limit,
-                     args.concurrency, label_list)
+            run_task(
+                args.provider,
+                base_url,
+                model,
+                quantization,
+                task,
+                lang,
+                args.limit,
+                args.concurrency,
+                label_list,
+            )
 
     print("\nDone.")
 

@@ -1,2 +1,3 @@
 site/results/
 site/.next/
+scripts/__pycache__/
