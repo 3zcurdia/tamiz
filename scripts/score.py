@@ -56,6 +56,20 @@ def extract_mc_letter(
     if m:
         return m.group(1).upper()
 
+    # An explicit "the answer is X" / "la respuesta es X" claim is authoritative.
+    # Models routinely state the letter and then explain, and the explanation names
+    # other options' text -- which defeats the verbatim fallback below, throwing away
+    # an answer that was stated unambiguously.
+    claim = re.search(
+        r"(?:answer|respuesta|opci[o\u00f3]n)\b[^.!?\n]{0,80}?"
+        r"\b(?:is|es|son|ser[i\u00ed]a)[:\s]*(?:la\s+|el\s+)?"
+        r"\(?([" + "".join(valid_letters) + r"])\)?\b",
+        s[:400],
+        re.IGNORECASE,
+    )
+    if claim:
+        return claim.group(1).upper()
+
     # fallback: exactly one option's full text appears verbatim (case-insensitive)
     matches = []
     for letter, text in choices.items():

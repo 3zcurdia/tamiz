@@ -34,12 +34,22 @@ PROVIDERS = {
 TASKS = ("qa_openbook", "commonsense_copa", "categorize", "translate")
 LANGS = ("en", "es")
 
+# These are ceilings, not reservations: a model that answers in 6 tokens stops at 6,
+# so a generous cap costs nothing. But it must leave room for models that emit a
+# reasoning preamble before the answer -- gpt-oss-20b ignores reasoning_effort=none
+# and scores 3.1 vs 93.8 on qa_openbook at a 32- vs 512-token cap, because the cap
+# truncates it mid-reasoning and content comes back empty.
 MAX_TOKENS = {
-    "qa_openbook": 16,
-    "commonsense_copa": 16,
-    "categorize": 16,
-    "translate": 400,
+    "qa_openbook": 512,
+    "commonsense_copa": 512,
+    "categorize": 512,
+    "translate": 1024,
 }
+DEFAULT_MAX_TOKENS = 512
+
+# "none" is sent as reasoning_effort=none, which suppresses thinking on servers that
+# honor it (LM Studio + Qwen3.x). Use "default" to omit the field entirely.
+DEFAULT_REASONING_EFFORT = "none"
 
 
 def model_slug(model_id: str) -> str:
@@ -76,6 +86,30 @@ def fetch_raw_model(base_url: str, model_id: str | None) -> dict | None:
         return data[0]
     except Exception:
         return None
+
+
+def loaded_context_length(base_url: str, model_id: str) -> int | None:
+    """Context window the model is actually loaded with, if the server reports it."""
+    try:
+        api_url = base_url.replace("/v1", "/api/v0")
+        r = requests.get(f"{api_url}/models", timeout=5)
+        r.raise_for_status()
+        for m in r.json().get("data", []):
+            if m.get("id") == model_id:
+                for k in ("loaded_context_length", "max_context_length"):
+                    v = m.get(k)
+                    if isinstance(v, int) and v > 0:
+                        return v
+    except Exception:
+        pass
+    return None
+
+
+def clamp_max_tokens(max_tok: int, ctx: int | None, prompt_reserve: int = 2048) -> int:
+    """Keep prompt + completion inside the context window."""
+    if not ctx:
+        return max_tok
+    return max(16, min(max_tok, ctx - prompt_reserve))
 
 
 def _lms_bin() -> str | None:
@@ -229,7 +263,12 @@ def load_done_ids(output_path: Path) -> set[str]:
 
 
 def call_api(
-    base_url: str, prompt: str, max_tokens: int, is_apple: bool, model: str = ""
+    base_url: str,
+    prompt: str,
+    max_tokens: int,
+    is_apple: bool,
+    model: str = "",
+    reasoning_effort: str = DEFAULT_REASONING_EFFORT,
 ) -> dict:
     """Call the chat completions API. Returns dict with output/error/timing."""
     payload = {
@@ -239,7 +278,9 @@ def call_api(
         "seed": 72,
         "max_tokens": max_tokens,
     }
-    # seed may be rejected by some servers; try without if 400
+    if reasoning_effort and reasoning_effort != "default":
+        payload["reasoning_effort"] = reasoning_effort
+    # seed / reasoning_effort may be rejected by some servers; try without if 400
     t0 = time.perf_counter()
     try:
         r = requests.post(
@@ -249,6 +290,13 @@ def call_api(
         )
         if r.status_code == 400 and "seed" in r.text.lower():
             payload.pop("seed", None)
+            r = requests.post(
+                f"{base_url}/chat/completions",
+                json=payload,
+                timeout=300,
+            )
+        if r.status_code == 400 and "reasoning" in r.text.lower():
+            payload.pop("reasoning_effort", None)
             r = requests.post(
                 f"{base_url}/chat/completions",
                 json=payload,
@@ -326,6 +374,8 @@ def run_task(
     limit: int | None,
     concurrency: int,
     label_list: list[str] | None,
+    reasoning_effort: str = DEFAULT_REASONING_EFFORT,
+    max_tokens_override: int | None = None,
 ):
     """Run one (task, lang) combination."""
     rows = load_dataset_file(task, lang)
@@ -350,15 +400,28 @@ def run_task(
     print(f"  {task}.{lang}: {len(todo)} to run ({len(done_ids)} already done).")
 
     is_apple = provider == "apple"
-    max_tok = MAX_TOKENS.get(task, 16)
+    max_tok = max_tokens_override or MAX_TOKENS.get(task, DEFAULT_MAX_TOKENS)
+    ctx = None if is_apple else loaded_context_length(base_url, model)
+    clamped = clamp_max_tokens(max_tok, ctx)
+    if clamped != max_tok:
+        print(f"    max_tokens {max_tok} -> {clamped} (context {ctx})")
+        max_tok = clamped
+
+    def is_transient(rec: dict) -> bool:
+        """Context overflow / guardrail won't fix themselves -- only retry real faults."""
+        if rec["error"] != "api_error":
+            return False
+        return "Context size has been exceeded" not in (rec["output"] or "")
 
     def process_row(row: dict) -> dict:
         prompt = build_prompt(row, label_list, lang)
-        result = call_api(base_url, prompt, max_tok, is_apple, model)
+        result = call_api(base_url, prompt, max_tok, is_apple, model, reasoning_effort)
         if result["error"] == "api_error" and "No models loaded" in result["output"]:
             ensure_model_loaded(model, base_url)
             time.sleep(3)
-            result = call_api(base_url, prompt, max_tok, is_apple, model)
+            result = call_api(
+                base_url, prompt, max_tok, is_apple, model, reasoning_effort
+            )
         return {
             "id": row["id"],
             "pair_id": row["pair_id"],
@@ -379,11 +442,11 @@ def run_task(
         if concurrency <= 1 or is_apple:
             for row in todo:
                 rec = process_row(row)
-                # retry once on generic api_error
-                if rec["error"] == "api_error":
+                # retry once on a transient api_error
+                if is_transient(rec):
                     if "No models loaded" in rec["output"]:
                         ensure_model_loaded(model, base_url)
-                    time.sleep(5)
+                        time.sleep(5)
                     rec = process_row(row)
                 fout.write(json.dumps(rec, ensure_ascii=False) + "\n")
                 fout.flush()
@@ -394,10 +457,10 @@ def run_task(
                 futures = {pool.submit(process_row, row): row for row in todo}
                 for fut in as_completed(futures):
                     rec = fut.result()
-                    if rec["error"] == "api_error":
+                    if is_transient(rec):
                         if "No models loaded" in rec["output"]:
                             ensure_model_loaded(model, base_url)
-                        time.sleep(5)
+                            time.sleep(5)
                         rec = process_row(futures[fut])
                     fout.write(json.dumps(rec, ensure_ascii=False) + "\n")
                     fout.flush()
@@ -428,6 +491,18 @@ def main():
     parser.add_argument("--lang", default="all", choices=list(LANGS) + ["all"])
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--concurrency", type=int, default=1)
+    parser.add_argument(
+        "--reasoning-effort",
+        default=DEFAULT_REASONING_EFFORT,
+        choices=["none", "low", "medium", "high", "default"],
+        help="reasoning_effort sent to the server ('default' omits the field)",
+    )
+    parser.add_argument(
+        "--max-tokens",
+        type=int,
+        default=None,
+        help="Override the per-task completion cap",
+    )
     args = parser.parse_args()
 
     base_url = PROVIDERS[args.provider]
@@ -471,6 +546,8 @@ def main():
                 args.limit,
                 args.concurrency,
                 label_list,
+                args.reasoning_effort,
+                args.max_tokens,
             )
 
     print("\nDone.")
