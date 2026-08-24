@@ -1,4 +1,4 @@
-import scores from "../results/scores.json";
+import scores from "../../results/scores.json";
 import { EnVsEsChart } from "./components/EnVsEsChart";
 import { SpanishGapChart } from "./components/SpanishGapChart";
 import { ModelBreakdown } from "./components/ModelBreakdown";
