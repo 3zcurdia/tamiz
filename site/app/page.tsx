@@ -3,6 +3,8 @@ import { EnVsEsChart } from "./components/EnVsEsChart";
 import { SpanishGapChart } from "./components/SpanishGapChart";
 import { ModelBreakdown } from "./components/ModelBreakdown";
 import { ScoresTable } from "./components/ScoresTable";
+import { OverallScoreChart } from "./components/OverallScoreChart";
+import { SpeedVsAccuracyChart } from "./components/SpeedVsAccuracyChart";
 
 const TASKS = ["qa_openbook", "commonsense_copa", "categorize", "translate"] as const;
 const TASK_LABELS: Record<string, string> = {
@@ -66,6 +68,15 @@ export default function Home() {
       {hasData && (
         <>
           <section>
+            <h2>Puntaje agregado</h2>
+            <p className="note">
+              Promedio simple de las 4 tareas por modelo e idioma (exact_match ×3 + chrf++).
+              Ordenado por el promedio EN+ES.
+            </p>
+            <OverallScoreChart records={records} />
+          </section>
+
+          <section>
             <h2>EN vs ES por tarea</h2>
             {TASKS.map((task) => {
               const taskRecords = records.filter((r) => r.task === task);
@@ -88,6 +99,15 @@ export default function Home() {
               Delta promedio por tarea y por modelo. Negativo = degrada en español.
             </p>
             <SpanishGapChart records={records} tasks={[...TASKS]} />
+          </section>
+
+          <section>
+            <h2>Velocidad vs precisión</h2>
+            <p className="note">
+              Cada punto es un modelo e idioma: tokens/segundo promedio (x) contra puntaje
+              agregado (y). Arriba a la izquierda = rápido y preciso.
+            </p>
+            <SpeedVsAccuracyChart records={records} />
           </section>
 
           <section>
