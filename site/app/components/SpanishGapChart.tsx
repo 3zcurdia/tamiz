@@ -59,7 +59,12 @@ export function SpanishGapChart({
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="model" tick={{ fontSize: 12 }} />
           <YAxis tick={{ fontSize: 12 }} />
-          <Tooltip />
+          <Tooltip
+            contentStyle={{ backgroundColor: "#6b7280", border: "1px solid #4b5563" }}
+            labelStyle={{ color: "#fff" }}
+            itemStyle={{ color: "#fff" }}
+            cursor={{ fill: "#9ca3af", fillOpacity: 0.3 }}
+          />
           <ReferenceLine y={0} stroke="#666" />
           <Bar
             dataKey="delta"

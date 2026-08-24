@@ -58,7 +58,12 @@ export function EnVsEsChart({
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="model" tick={{ fontSize: 12 }} />
           <YAxis domain={[0, 100]} tick={{ fontSize: 12 }} />
-          <Tooltip />
+          <Tooltip
+            contentStyle={{ backgroundColor: "#6b7280", border: "1px solid #4b5563" }}
+            labelStyle={{ color: "#fff" }}
+            itemStyle={{ color: "#fff" }}
+            cursor={{ fill: "#9ca3af", fillOpacity: 0.3 }}
+          />
           <Legend />
           <Bar dataKey="en" fill={COLORS.en} name="EN" />
           <Bar dataKey="es" fill={COLORS.es} name="ES" />
