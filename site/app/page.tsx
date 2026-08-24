@@ -14,13 +14,13 @@ const TASK_LABELS: Record<string, string> = {
 
 const TASK_DESCRIPTIONS: Record<string, string> = {
   qa_openbook:
-    "Multiple-choice science questions requiring common-sense background knowledge. Measures whether the model can reason about everyday facts and pick the correct answer in each language.",
+    "Preguntas de opción múltiple sobre ciencia que requieren conocimiento de sentido común. Mide si el modelo puede razonar sobre hechos cotidianos y elegir la respuesta correcta en cada idioma.",
   commonsense_copa:
-    "Choice of plausible alternatives — picks which premise (cause or effect) best completes a situation. Tests everyday causal reasoning and pragmatic inference.",
+    "Elección de alternativas plausibles: selecciona la premisa (causa o efecto) que mejor completa una situación. Evalúa el razonamiento causal cotidiano y la inferencia pragmática.",
   categorize:
-    "Classifies a spoken-style user request (home-assistant intents) into one of 60 intents. Tests understanding of colloquial commands and intent recognition, with the same utterances localized in each language.",
+    "Clasifica una petición de usuario en lenguaje hablado (intents de asistente de hogar) en una de 60 categorías. Evalúa la comprensión de comandos coloquiales y el reconocimiento de intención, con los mismos enunciados localizados en cada idioma.",
   translate:
-    "English → Mexican Spanish translation of news snippets against human post-edited references. Tests fluency, accuracy, and local (Latin American) register in the target language.",
+    "Traducción de fragmentos de noticias del inglés al español mexicano contra referencias corregidas por humanos. Evalúa fluidez, exactitud y el registro local (latinoamericano) en el idioma de destino.",
 };
 
 interface ScoreRecord {
@@ -49,16 +49,24 @@ export default function Home() {
       <header>
         <h1>Tamiz LLM Benchmark</h1>
         <p className="subtitle">
+          Yet Another Trust Me Bro Benchmark: but for spanish speaking audiences
+        </p>
+        <p className="goal">
+          Este proyecto tiene como objetivo mostrar las capacidades de diversos modelos abiertos y locales
+          para el procesamiento en tareas cotidianas y destacar la brecha existente entre resultados entre el español
+          y el inglés, ayudándote a elegir el mejor modelo para el contexto hispano hablante.
+        </p>
+        <p className="subtitle">
           {hasData
-            ? `${models.length} model${models.length !== 1 ? "s" : ""} · generated ${scores.generated_at}`
-            : "No benchmark results yet. Run scripts/run_bench.py and scripts/score.py first."}
+            ? `${models.length} modelo${models.length !== 1 ? "s" : ""} · generado ${scores.generated_at}`
+            : "Aún no hay resultados del benchmark. Ejecuta scripts/run_bench.py y scripts/score.py primero."}
         </p>
       </header>
 
       {hasData && (
         <>
           <section>
-            <h2>EN vs ES per Task</h2>
+            <h2>EN vs ES por tarea</h2>
             {TASKS.map((task) => {
               const taskRecords = records.filter((r) => r.task === task);
               if (taskRecords.length === 0) return null;
@@ -75,15 +83,15 @@ export default function Home() {
           </section>
 
           <section>
-            <h2>Spanish Gap (ES − EN)</h2>
+            <h2>Brecha en español (ES − EN)</h2>
             <p className="note">
-              Average per-task delta per model. Negative = degrades in Spanish.
+              Delta promedio por tarea y por modelo. Negativo = degrada en español.
             </p>
             <SpanishGapChart records={records} tasks={[...TASKS]} />
           </section>
 
           <section>
-            <h2>Per-Model Breakdown</h2>
+            <h2>Desglose por modelo</h2>
             {models.map((model) => (
               <ModelBreakdown
                 key={model}
@@ -96,7 +104,7 @@ export default function Home() {
           </section>
 
           <section>
-            <h2>Results Table</h2>
+            <h2>Tabla de resultados</h2>
             <ScoresTable records={records} />
           </section>
         </>

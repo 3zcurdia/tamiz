@@ -13,13 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tamiz — Benchmark Results",
-  description: "Local LLM benchmark results for EN and ES tasks",
+  title: "Tamiz — Resultados del Benchmark",
+  description: "Resultados del benchmark de LLMs locales para tareas EN y ES",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="es" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>{children}</body>
     </html>
   );
