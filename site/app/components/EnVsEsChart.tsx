@@ -19,15 +19,17 @@ interface ScoreRecord {
   n: number;
 }
 
-const COLORS = { en: "#3b82f6", es: "#ef4444" };
+const COLORS = { en: "#22d3ee", es: "#a78bfa" };
 
 export function EnVsEsChart({
   task,
   label,
+  description,
   records,
 }: {
   task: string;
   label: string;
+  description: string;
   records: ScoreRecord[];
 }) {
   const models = [...new Set(records.map((r) => r.model))].sort();
@@ -50,19 +52,20 @@ export function EnVsEsChart({
   return (
     <div className="chart-card">
       <h3>{label}</h3>
+      <p className="chart-desc">{description}</p>
       <p className="chart-meta">
         metric: {metric} · n ≤ {maxN}
       </p>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="model" tick={{ fontSize: 12 }} />
-          <YAxis domain={[0, 100]} tick={{ fontSize: 12 }} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+          <XAxis dataKey="model" tick={{ fontSize: 12, fill: "#94a3b8" }} stroke="#334155" />
+          <YAxis domain={[0, 100]} tick={{ fontSize: 12, fill: "#94a3b8" }} stroke="#334155" />
           <Tooltip
-            contentStyle={{ backgroundColor: "#6b7280", border: "1px solid #4b5563" }}
-            labelStyle={{ color: "#fff" }}
-            itemStyle={{ color: "#fff" }}
-            cursor={{ fill: "#9ca3af", fillOpacity: 0.3 }}
+            contentStyle={{ backgroundColor: "#0d1420", border: "1px solid #22d3ee", borderRadius: "8px" }}
+            labelStyle={{ color: "#22d3ee" }}
+            itemStyle={{ color: "#e2e8f0" }}
+            cursor={{ fill: "rgba(34, 211, 238, 0.08)" }}
           />
           <Legend />
           <Bar dataKey="en" fill={COLORS.en} name="EN" />

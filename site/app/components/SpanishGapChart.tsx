@@ -56,19 +56,19 @@ export function SpanishGapChart({
     <div className="chart-card">
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="model" tick={{ fontSize: 12 }} />
-          <YAxis tick={{ fontSize: 12 }} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+          <XAxis dataKey="model" tick={{ fontSize: 12, fill: "#94a3b8" }} stroke="#334155" />
+          <YAxis tick={{ fontSize: 12, fill: "#94a3b8" }} stroke="#334155" />
           <Tooltip
-            contentStyle={{ backgroundColor: "#6b7280", border: "1px solid #4b5563" }}
-            labelStyle={{ color: "#fff" }}
-            itemStyle={{ color: "#fff" }}
-            cursor={{ fill: "#9ca3af", fillOpacity: 0.3 }}
+            contentStyle={{ backgroundColor: "#0d1420", border: "1px solid #a78bfa", borderRadius: "8px" }}
+            labelStyle={{ color: "#a78bfa" }}
+            itemStyle={{ color: "#e2e8f0" }}
+            cursor={{ fill: "rgba(167, 139, 250, 0.08)" }}
           />
-          <ReferenceLine y={0} stroke="#666" />
+          <ReferenceLine y={0} stroke="#475569" />
           <Bar
             dataKey="delta"
-            fill="#8b5cf6"
+            fill="#a78bfa"
             name="ES − EN"
             radius={[4, 4, 0, 0]}
           />

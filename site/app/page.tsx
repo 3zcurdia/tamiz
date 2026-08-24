@@ -12,6 +12,17 @@ const TASK_LABELS: Record<string, string> = {
   translate: "Translate",
 };
 
+const TASK_DESCRIPTIONS: Record<string, string> = {
+  qa_openbook:
+    "Multiple-choice science questions requiring common-sense background knowledge. Measures whether the model can reason about everyday facts and pick the correct answer in each language.",
+  commonsense_copa:
+    "Choice of plausible alternatives — picks which premise (cause or effect) best completes a situation. Tests everyday causal reasoning and pragmatic inference.",
+  categorize:
+    "Classifies a spoken-style user request (home-assistant intents) into one of 60 intents. Tests understanding of colloquial commands and intent recognition, with the same utterances localized in each language.",
+  translate:
+    "English → Mexican Spanish translation of news snippets against human post-edited references. Tests fluency, accuracy, and local (Latin American) register in the target language.",
+};
+
 interface ScoreRecord {
   provider: string;
   model: string;
@@ -56,6 +67,7 @@ export default function Home() {
                   key={task}
                   task={task}
                   label={TASK_LABELS[task]}
+                  description={TASK_DESCRIPTIONS[task]}
                   records={taskRecords}
                 />
               );
