@@ -1,3 +1,5 @@
 site/results/
 site/.next/
+site/node_modules/
 scripts/__pycache__/
+results/logs/*

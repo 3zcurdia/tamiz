@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-24T04:17:25Z",
+  "generated_at": "2026-08-24T15:29:14Z",
   "records": [
     {
       "provider": "lmstudio",
@@ -256,54 +256,6 @@
       "avg_latency_ms": 19254.4,
       "total_prompt_tokens": 64865,
       "total_completion_tokens": 288555
-    },
-    {
-      "provider": "lmstudio",
-      "model": "laguna-xs-2.1",
-      "quantization": "q4_k_m",
-      "task": "translate",
-      "lang": "en",
-      "metric": "chrf++",
-      "score": 0.4,
-      "n": 220,
-      "format_failure_rate": 0.0,
-      "avg_tokens_per_second": 13.92,
-      "median_tokens_per_second": 13.95,
-      "avg_latency_ms": 28689.2,
-      "total_prompt_tokens": 24654,
-      "total_completion_tokens": 87697
-    },
-    {
-      "provider": "lmstudio",
-      "model": "meta/muse-glimmer",
-      "quantization": "q4_k_m",
-      "task": "translate",
-      "lang": "en",
-      "metric": "chrf++",
-      "score": 6.4,
-      "n": 960,
-      "format_failure_rate": 0.0,
-      "avg_tokens_per_second": 3.38,
-      "median_tokens_per_second": 3.38,
-      "avg_latency_ms": 111790.6,
-      "total_prompt_tokens": 106066,
-      "total_completion_tokens": 362990
-    },
-    {
-      "provider": "lmstudio",
-      "model": "meta/muse-glimmer",
-      "quantization": "q4_k_m",
-      "task": "translate",
-      "lang": "es",
-      "metric": "chrf++",
-      "score": 10.1,
-      "n": 960,
-      "format_failure_rate": 0.0,
-      "avg_tokens_per_second": 3.42,
-      "median_tokens_per_second": 3.43,
-      "avg_latency_ms": 108822.2,
-      "total_prompt_tokens": 107986,
-      "total_completion_tokens": 357688
     },
     {
       "provider": "lmstudio",
@@ -944,38 +896,6 @@
       "avg_latency_ms": 35493.2,
       "total_prompt_tokens": 67454,
       "total_completion_tokens": 51850
-    },
-    {
-      "provider": "lmstudio",
-      "model": "qwen/qwen3.8-27b",
-      "quantization": "q4_k_m",
-      "task": "translate",
-      "lang": "en",
-      "metric": "chrf++",
-      "score": 4.8,
-      "n": 960,
-      "format_failure_rate": 0.0,
-      "avg_tokens_per_second": 2.83,
-      "median_tokens_per_second": 2.84,
-      "avg_latency_ms": 129532.3,
-      "total_prompt_tokens": 103934,
-      "total_completion_tokens": 352331
-    },
-    {
-      "provider": "lmstudio",
-      "model": "qwen/qwen3.8-27b",
-      "quantization": "q4_k_m",
-      "task": "translate",
-      "lang": "es",
-      "metric": "chrf++",
-      "score": 6.1,
-      "n": 960,
-      "format_failure_rate": 0.0,
-      "avg_tokens_per_second": 2.84,
-      "median_tokens_per_second": 2.84,
-      "avg_latency_ms": 127068.4,
-      "total_prompt_tokens": 105854,
-      "total_completion_tokens": 345996
     },
     {
       "provider": "lmstudio",
