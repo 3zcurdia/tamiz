@@ -40,8 +40,10 @@ export function ModelBreakdown({
         task: taskLabels[task] || task,
         en: en?.score ?? null,
         es: es?.score ?? null,
+        avg: ((en?.score ?? 0) + (es?.score ?? 0)) / 2,
       };
-    });
+    })
+    .sort((a, b) => a.avg - b.avg);
 
   if (data.length === 0) return null;
 

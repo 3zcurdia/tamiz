@@ -34,17 +34,20 @@ export function EnVsEsChart({
 }) {
   const models = [...new Set(records.map((r) => r.model))].sort();
 
-  const data = models.map((model) => {
-    const en = records.find((r) => r.model === model && r.lang === "en");
-    const es = records.find((r) => r.model === model && r.lang === "es");
-    return {
-      model: shortModel(model),
-      en: en?.score ?? null,
-      es: es?.score ?? null,
-      metric: en?.metric || es?.metric || "",
-      n: (en?.n ?? 0) + (es?.n ?? 0),
-    };
-  });
+  const data = models
+    .map((model) => {
+      const en = records.find((r) => r.model === model && r.lang === "en");
+      const es = records.find((r) => r.model === model && r.lang === "es");
+      return {
+        model: shortModel(model),
+        en: en?.score ?? null,
+        es: es?.score ?? null,
+        avg: ((en?.score ?? 0) + (es?.score ?? 0)) / 2,
+        metric: en?.metric || es?.metric || "",
+        n: (en?.n ?? 0) + (es?.n ?? 0),
+      };
+    })
+    .sort((a, b) => a.avg - b.avg);
 
   const metric = records[0]?.metric ?? "";
   const maxN = Math.max(...records.map((r) => r.n));
