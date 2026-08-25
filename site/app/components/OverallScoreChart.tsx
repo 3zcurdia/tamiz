@@ -46,7 +46,7 @@ export function OverallScoreChart({ records }: { records: ScoreRecord[] }) {
     .sort((a, b) => {
       const avgA = ((a.en ?? 0) + (a.es ?? 0)) / 2;
       const avgB = ((b.en ?? 0) + (b.es ?? 0)) / 2;
-      return avgA - avgB;
+      return avgB - avgA;
     });
 
   const xProps = getXAxisProps(isMobile);

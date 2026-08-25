@@ -52,7 +52,7 @@ export function SpanishGapChart({
         n_tasks: deltas.length,
       };
     })
-    .sort((a, b) => a.delta - b.delta);
+    .sort((a, b) => b.delta - a.delta);
 
   const xProps = getXAxisProps(isMobile);
 

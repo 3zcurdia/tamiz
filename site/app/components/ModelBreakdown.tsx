@@ -43,7 +43,7 @@ export function ModelBreakdown({
         avg: ((en?.score ?? 0) + (es?.score ?? 0)) / 2,
       };
     })
-    .sort((a, b) => a.avg - b.avg);
+    .sort((a, b) => b.avg - a.avg);
 
   if (data.length === 0) return null;
 

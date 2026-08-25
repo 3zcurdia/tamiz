@@ -46,7 +46,7 @@ export function EnVsEsChart({
         n: (en?.n ?? 0) + (es?.n ?? 0),
       };
     })
-    .sort((a, b) => a.avg - b.avg);
+    .sort((a, b) => b.avg - a.avg);
 
   const metric = records[0]?.metric ?? "";
   const maxN = Math.max(...records.map((r) => r.n));
