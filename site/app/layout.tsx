@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   description: "Resultados del benchmark de LLMs locales para tareas EN y ES",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable}`}>

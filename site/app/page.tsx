@@ -112,15 +112,17 @@ export default function Home() {
 
           <section>
             <h2>Desglose por modelo</h2>
-            {models.map((model) => (
-              <ModelBreakdown
-                key={model}
-                model={model}
-                records={records.filter((r) => r.model === model)}
-                tasks={[...TASKS]}
-                taskLabels={TASK_LABELS}
-              />
-            ))}
+            <div className="breakdown-grid">
+              {models.map((model) => (
+                <ModelBreakdown
+                  key={model}
+                  model={model}
+                  records={records.filter((r) => r.model === model)}
+                  tasks={[...TASKS]}
+                  taskLabels={TASK_LABELS}
+                />
+              ))}
+            </div>
           </section>
 
           <section>

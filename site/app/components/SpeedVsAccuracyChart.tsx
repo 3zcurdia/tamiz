@@ -10,6 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { COLORS, useIsMobile } from "./chartTheme";
 
 interface ScoreRecord {
   model: string;
@@ -24,8 +25,6 @@ interface Point {
   tps: number;
   score: number;
 }
-
-const COLORS = { en: "#22d3ee", es: "#a78bfa" };
 
 function buildSeries(records: ScoreRecord[], lang: "en" | "es"): Point[] {
   const models = [...new Set(records.map((r) => r.model))].sort();
@@ -44,48 +43,52 @@ function buildSeries(records: ScoreRecord[], lang: "en" | "es"): Point[] {
 }
 
 export function SpeedVsAccuracyChart({ records }: { records: ScoreRecord[] }) {
+  const isMobile = useIsMobile(640);
   const enData = buildSeries(records, "en");
   const esData = buildSeries(records, "es");
 
   return (
     <div className="chart-card">
-      <ResponsiveContainer width="100%" height={360}>
-        <ScatterChart margin={{ top: 5, right: 30, left: 20, bottom: 15 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-          <XAxis
-            type="number"
-            dataKey="tps"
-            name="tok/s"
-            tick={{ fontSize: 12, fill: "#94a3b8" }}
-            stroke="#334155"
-            label={{
-              value: "tokens/segundo (promedio)",
-              position: "insideBottom",
-              offset: -10,
-              fill: "#94a3b8",
-              fontSize: 12,
-            }}
-          />
-          <YAxis
-            type="number"
-            dataKey="score"
-            domain={[0, 100]}
-            tick={{ fontSize: 12, fill: "#94a3b8" }}
-            stroke="#334155"
-            label={{
-              value: "Puntaje agregado",
-              angle: -90,
-              position: "insideLeft",
-              fill: "#94a3b8",
-              fontSize: 12,
-            }}
-          />
-          <Tooltip content={<SpeedAccuracyTooltip />} cursor={{ strokeDasharray: "3 3", stroke: "#334155" }} />
-          <Legend />
-          <Scatter name="EN" data={enData} fill={COLORS.en} />
-          <Scatter name="ES" data={esData} fill={COLORS.es} />
-        </ScatterChart>
-      </ResponsiveContainer>
+      <div className="chart-scroll-wrap chart-scroll-wrap--no-min">
+        <ResponsiveContainer width="100%" height={isMobile ? 300 : 360}>
+          <ScatterChart margin={{ top: 5, right: isMobile ? 12 : 30, left: isMobile ? 0 : 10, bottom: isMobile ? 22 : 15 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+            <XAxis
+              type="number"
+              dataKey="tps"
+              name="tok/s"
+              tick={{ fontSize: isMobile ? 10 : 12, fill: "#94a3b8" }}
+              stroke="#334155"
+              label={{
+                value: isMobile ? "tok/s" : "tokens/segundo (promedio)",
+                position: "insideBottom",
+                offset: isMobile ? -12 : -10,
+                fill: "#94a3b8",
+                fontSize: isMobile ? 11 : 12,
+              }}
+            />
+            <YAxis
+              type="number"
+              dataKey="score"
+              domain={[0, 100]}
+              tick={{ fontSize: isMobile ? 10 : 12, fill: "#94a3b8" }}
+              stroke="#334155"
+              width={isMobile ? 32 : 42}
+              label={{
+                value: isMobile ? "Puntaje" : "Puntaje agregado",
+                angle: -90,
+                position: "insideLeft",
+                fill: "#94a3b8",
+                fontSize: isMobile ? 11 : 12,
+              }}
+            />
+            <Tooltip content={<SpeedAccuracyTooltip />} cursor={{ strokeDasharray: "3 3", stroke: "#334155" }} />
+            <Legend wrapperStyle={{ fontSize: isMobile ? 11 : 12 }} />
+            <Scatter name="EN" data={enData} fill={COLORS.en} />
+            <Scatter name="ES" data={esData} fill={COLORS.es} />
+          </ScatterChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

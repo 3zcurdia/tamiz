@@ -43,9 +43,22 @@ a {
 }
 
 .container {
+  width: 100%;
   max-width: 1100px;
   margin: 0 auto;
   padding: 2rem 1.5rem 4rem;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 1.25rem 1rem 2.5rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .container {
+    padding: 1rem 0.75rem 2rem;
+  }
 }
 
 header {
@@ -53,10 +66,11 @@ header {
 }
 
 header h1 {
-  font-size: 1.75rem;
+  font-size: clamp(1.35rem, 5vw, 1.75rem);
   font-weight: 700;
   margin-bottom: 0.25rem;
   color: var(--foreground);
+  text-wrap: balance;
   text-shadow:
     0 0 8px rgba(34, 211, 238, 0.5),
     0 0 24px rgba(34, 211, 238, 0.2);
@@ -80,7 +94,7 @@ section {
 }
 
 section h2 {
-  font-size: 1.25rem;
+  font-size: clamp(1.05rem, 3.5vw, 1.25rem);
   font-weight: 600;
   margin-bottom: 0.75rem;
   border: none;
@@ -129,6 +143,53 @@ section h2 {
   margin-bottom: 0.5rem;
 }
 
+.chart-card {
+  overflow: hidden;
+}
+
+.chart-scroll-wrap {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+  margin: 0 -0.25rem;
+  padding: 0 0.25rem 0.25rem;
+}
+
+.chart-scroll-wrap--no-min {
+  overflow-x: visible;
+}
+
+@media (max-width: 640px) {
+  .chart-scroll-wrap:not(.chart-scroll-wrap--no-min) {
+    margin: 0 -0.5rem;
+    padding: 0 0.5rem 0.25rem;
+  }
+}
+
+.model-breakdown-title {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-size: clamp(0.85rem, 2.8vw, 1rem);
+}
+
+/* Grid replaces inline-block for breakdown + methodology highlights */
+.breakdown-grid,
+.highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 1rem;
+  align-items: start;
+}
+
+.highlights-grid .chart-card--small,
+.breakdown-grid .chart-card--small {
+  width: 100%;
+  margin-right: 0;
+  display: block;
+}
+
 .chart-card--small {
   display: inline-block;
   width: calc(50% - 0.5rem);
@@ -137,20 +198,70 @@ section h2 {
 }
 
 @media (max-width: 700px) {
-  .chart-card--small {
+  .chart-card--small,
+  .breakdown-grid,
+  .highlights-grid {
     width: 100%;
     margin-right: 0;
+  }
+  .breakdown-grid,
+  .highlights-grid {
+    grid-template-columns: 1fr;
+  }
+  .chart-scroll-wrap--no-min {
+    overflow-x: auto;
   }
 }
 
 .table-wrap {
   overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-bg);
+}
+
+.table-wrap table {
+  min-width: 680px;
+}
+
+.table-wrap--methodology table {
+  min-width: 620px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.85rem;
+}
+
+.table-hint {
+  display: none;
+  color: var(--muted);
+  font-size: 0.75rem;
+  margin-bottom: 0.4rem;
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .table-wrap table {
+    font-size: 0.8rem;
+  }
+  th, td {
+    padding: 0.4rem 0.5rem;
+  }
+  .table-hint {
+    display: block;
+  }
+}
+
+@media (max-width: 640px) {
+  .hide-mobile {
+    display: none;
+  }
 }
 
 th {
@@ -180,6 +291,16 @@ tr:hover td {
 .model-cell {
   font-family: var(--font-geist-mono), monospace;
   font-size: 0.8rem;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 22ch;
+}
+
+@media (max-width: 640px) {
+  .model-cell {
+    max-width: 14ch;
+    font-size: 0.75rem;
+  }
 }
 
 .score-cell {
@@ -200,21 +321,40 @@ tr:hover td {
 
 .site-nav .site-nav-inner {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
 }
 
+@media (max-width: 480px) {
+  .site-nav .site-nav-inner {
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+  }
+}
+
 .site-brand {
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 2.5vw, 0.95rem);
   color: var(--cyan);
 }
 
 .site-nav-links {
   display: flex;
   gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .site-nav-links {
+    gap: 0.9rem;
+  }
+  .nav-link {
+    font-size: 0.85rem;
+  }
 }
 
 .nav-link {
@@ -249,11 +389,29 @@ code {
   border-radius: 8px;
   padding: 1rem;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   font-family: var(--font-geist-mono), monospace;
   font-size: 0.8rem;
   line-height: 1.5;
   color: var(--foreground);
   margin-bottom: 0.75rem;
+  white-space: pre;
+}
+
+@media (max-width: 640px) {
+  .code-block {
+    font-size: 0.7rem;
+    padding: 0.75rem;
+  }
+  .chart-card {
+    padding: 0.75rem 0.75rem 0.4rem;
+  }
+  .chart-card h3 {
+    font-size: 0.95rem;
+  }
+  .chart-desc {
+    font-size: 0.8rem;
+  }
 }
 
 .methodology-list {

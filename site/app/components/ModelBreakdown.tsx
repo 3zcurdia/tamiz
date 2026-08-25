@@ -9,6 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { COLORS, TOOLTIP_STYLE, useIsMobile, BREAKDOWN_BAR_CATEGORY_GAP, BAR_GAP } from "./chartTheme";
 
 interface ScoreRecord {
   task: string;
@@ -17,8 +18,6 @@ interface ScoreRecord {
   metric: string;
   n: number;
 }
-
-const COLORS = { en: "#22d3ee", es: "#a78bfa" };
 
 export function ModelBreakdown({
   model,
@@ -31,6 +30,7 @@ export function ModelBreakdown({
   tasks: string[];
   taskLabels: Record<string, string>;
 }) {
+  const isMobile = useIsMobile(640);
   const data = tasks
     .filter((t) => records.some((r) => r.task === t))
     .map((task) => {
@@ -49,20 +49,20 @@ export function ModelBreakdown({
 
   return (
     <div className="chart-card chart-card--small">
-      <h3>{model}</h3>
-      <ResponsiveContainer width="100%" height={200}>
-        <BarChart data={data} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-          <XAxis dataKey="task" tick={{ fontSize: 11, fill: "#94a3b8" }} stroke="#334155" />
-          <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: "#94a3b8" }} stroke="#334155" />
+      <h3 className="model-breakdown-title">{model}</h3>
+      <ResponsiveContainer width="100%" height={isMobile ? 180 : 200}>
+        <BarChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 5 }} barCategoryGap={BREAKDOWN_BAR_CATEGORY_GAP} barGap={BAR_GAP}>
+          <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
+          <XAxis dataKey="task" tick={{ fontSize: isMobile ? 10 : 11, fill: COLORS.tick }} stroke={COLORS.axis} interval={0} />
+          <YAxis domain={[0, 100]} tick={{ fontSize: isMobile ? 10 : 11, fill: COLORS.tick }} stroke={COLORS.axis} width={30} />
           <Tooltip
-            contentStyle={{ backgroundColor: "#0d1420", border: "1px solid #22d3ee", borderRadius: "8px" }}
-            labelStyle={{ color: "#22d3ee" }}
-            itemStyle={{ color: "#e2e8f0" }}
+            contentStyle={TOOLTIP_STYLE.contentStyle}
+            labelStyle={TOOLTIP_STYLE.labelStyle}
+            itemStyle={TOOLTIP_STYLE.itemStyle}
             cursor={{ fill: "rgba(34, 211, 238, 0.08)" }}
           />
-          <Bar dataKey="en" fill={COLORS.en} name="EN" />
-          <Bar dataKey="es" fill={COLORS.es} name="ES" />
+          <Bar dataKey="en" fill={COLORS.en} name="EN" radius={[4, 4, 0, 0]} maxBarSize={40} />
+          <Bar dataKey="es" fill={COLORS.es} name="ES" radius={[4, 4, 0, 0]} maxBarSize={40} />
         </BarChart>
       </ResponsiveContainer>
     </div>

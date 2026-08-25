@@ -10,6 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { COLORS, TOOLTIP_STYLE, shortModel, useIsMobile, getXAxisProps, chartMinWidth, BAR_CATEGORY_GAP, BAR_GAP } from "./chartTheme";
 
 interface ScoreRecord {
   model: string;
@@ -17,14 +18,13 @@ interface ScoreRecord {
   score: number;
 }
 
-const COLORS = { en: "#22d3ee", es: "#a78bfa" };
-
 function mean(scores: number[]) {
   if (scores.length === 0) return null;
   return scores.reduce((a, b) => a + b, 0) / scores.length;
 }
 
 export function OverallScoreChart({ records }: { records: ScoreRecord[] }) {
+  const isMobile = useIsMobile(640);
   const models = [...new Set(records.map((r) => r.model))].sort();
 
   const data = models
@@ -36,7 +36,7 @@ export function OverallScoreChart({ records }: { records: ScoreRecord[] }) {
         records.filter((r) => r.model === model && r.lang === "es").map((r) => r.score)
       );
       return {
-        model: shortModel(model),
+        model: shortModel(model, isMobile ? 18 : 24),
         fullModel: model,
         en,
         es,
@@ -49,37 +49,30 @@ export function OverallScoreChart({ records }: { records: ScoreRecord[] }) {
       return avgA - avgB;
     });
 
+  const xProps = getXAxisProps(isMobile);
+
   return (
     <div className="chart-card">
-      <ResponsiveContainer width="100%" height={360}>
-        <BarChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-          <XAxis
-            dataKey="model"
-            tick={{ fontSize: 12, fill: "#94a3b8" }}
-            stroke="#334155"
-            interval={0}
-            angle={-20}
-            textAnchor="end"
-            height={60}
-          />
-          <YAxis domain={[0, 100]} tick={{ fontSize: 12, fill: "#94a3b8" }} stroke="#334155" />
-          <Tooltip
-            contentStyle={{ backgroundColor: "#0d1420", border: "1px solid #22d3ee", borderRadius: "8px" }}
-            labelStyle={{ color: "#22d3ee" }}
-            itemStyle={{ color: "#e2e8f0" }}
-            cursor={{ fill: "rgba(34, 211, 238, 0.08)" }}
-          />
-          <Legend />
-          <Bar dataKey="en" fill={COLORS.en} name="EN" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="es" fill={COLORS.es} name="ES" radius={[4, 4, 0, 0]} />
-        </BarChart>
-      </ResponsiveContainer>
+      <div className="chart-scroll-wrap">
+        <div style={{ minWidth: chartMinWidth(data.length), width: "100%" }}>
+          <ResponsiveContainer width="100%" height={isMobile ? 320 : 360}>
+            <BarChart data={data} margin={{ top: 5, right: 16, left: 0, bottom: 5 }} barCategoryGap={BAR_CATEGORY_GAP} barGap={BAR_GAP}>
+              <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
+              <XAxis dataKey="model" {...xProps} />
+              <YAxis domain={[0, 100]} tick={{ fontSize: isMobile ? 10 : 11, fill: COLORS.tick }} stroke={COLORS.axis} width={32} />
+              <Tooltip
+                contentStyle={TOOLTIP_STYLE.contentStyle}
+                labelStyle={TOOLTIP_STYLE.labelStyle}
+                itemStyle={TOOLTIP_STYLE.itemStyle}
+                cursor={{ fill: "rgba(34, 211, 238, 0.08)" }}
+              />
+              <Legend wrapperStyle={{ fontSize: isMobile ? 11 : 12, paddingTop: 8 }} />
+              <Bar dataKey="en" fill={COLORS.en} name="EN" radius={[4, 4, 0, 0]} maxBarSize={48} />
+              <Bar dataKey="es" fill={COLORS.es} name="ES" radius={[4, 4, 0, 0]} maxBarSize={48} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
     </div>
   );
-}
-
-function shortModel(model: string) {
-  if (model.length > 24) return model.slice(0, 22) + "…";
-  return model;
 }

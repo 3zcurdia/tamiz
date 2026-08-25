@@ -55,41 +55,44 @@ export function ScoresTable({ records }: { records: ScoreRecord[] }) {
   }
 
   return (
-    <div className="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th onClick={() => handleSort("model")}>Model{arrow("model")}</th>
-            <th onClick={() => handleSort("quantization")}>Quant{arrow("quantization")}</th>
-            <th onClick={() => handleSort("task")}>Task{arrow("task")}</th>
-            <th onClick={() => handleSort("lang")}>Lang{arrow("lang")}</th>
-            <th onClick={() => handleSort("metric")}>Metric{arrow("metric")}</th>
-            <th onClick={() => handleSort("score")}>Score{arrow("score")}</th>
-            <th onClick={() => handleSort("n")}>n{arrow("n")}</th>
-            <th onClick={() => handleSort("format_failure_rate")}>
-              FF%{arrow("format_failure_rate")}
-            </th>
-            <th onClick={() => handleSort("avg_tokens_per_second")}>tok/s{arrow("avg_tokens_per_second")}</th>
-            <th onClick={() => handleSort("avg_latency_ms")}>lat ms{arrow("avg_latency_ms")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sorted.map((r, i) => (
-            <tr key={i}>
-              <td className="model-cell">{r.model}</td>
-              <td>{r.quantization ?? "unknown"}</td>
-              <td>{TASK_LABELS[r.task] || r.task}</td>
-              <td>{r.lang.toUpperCase()}</td>
-              <td>{r.metric}</td>
-              <td className="score-cell">{r.score.toFixed(1)}</td>
-              <td>{r.n}</td>
-              <td>{r.format_failure_rate.toFixed(1)}</td>
-              <td>{r.avg_tokens_per_second != null ? r.avg_tokens_per_second.toFixed(1) : "—"}</td>
-              <td>{r.avg_latency_ms != null ? r.avg_latency_ms.toFixed(0) : "—"}</td>
+    <>
+      <p className="table-hint">← desliza para ver más columnas →</p>
+      <div className="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th onClick={() => handleSort("model")}>Model{arrow("model")}</th>
+              <th onClick={() => handleSort("quantization")}>Quant{arrow("quantization")}</th>
+              <th onClick={() => handleSort("task")}>Task{arrow("task")}</th>
+              <th onClick={() => handleSort("lang")}>Lang{arrow("lang")}</th>
+              <th className="hide-mobile" onClick={() => handleSort("metric")}>Metric{arrow("metric")}</th>
+              <th onClick={() => handleSort("score")}>Score{arrow("score")}</th>
+              <th className="hide-mobile" onClick={() => handleSort("n")}>n{arrow("n")}</th>
+              <th className="hide-mobile" onClick={() => handleSort("format_failure_rate")}>
+                FF%{arrow("format_failure_rate")}
+              </th>
+              <th onClick={() => handleSort("avg_tokens_per_second")}>tok/s{arrow("avg_tokens_per_second")}</th>
+              <th className="hide-mobile" onClick={() => handleSort("avg_latency_ms")}>lat ms{arrow("avg_latency_ms")}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+        <tbody>
+            {sorted.map((r, i) => (
+              <tr key={i}>
+                <td className="model-cell">{r.model}</td>
+                <td>{r.quantization ?? "unknown"}</td>
+                <td>{TASK_LABELS[r.task] || r.task}</td>
+                <td>{r.lang.toUpperCase()}</td>
+                <td className="hide-mobile">{r.metric}</td>
+                <td className="score-cell">{r.score.toFixed(1)}</td>
+                <td className="hide-mobile">{r.n}</td>
+                <td className="hide-mobile">{r.format_failure_rate.toFixed(1)}</td>
+                <td>{r.avg_tokens_per_second != null ? r.avg_tokens_per_second.toFixed(1) : "—"}</td>
+                <td className="hide-mobile">{r.avg_latency_ms != null ? r.avg_latency_ms.toFixed(0) : "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }

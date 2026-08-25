@@ -99,12 +99,14 @@ export default function MethodologyPage() {
 
       <section>
         <h2>Resumen</h2>
-        {HIGHLIGHTS.map((h) => (
-          <div key={h.title} className="chart-card chart-card--small">
-            <h3>{h.title}</h3>
-            <p className="chart-desc">{h.desc}</p>
-          </div>
-        ))}
+        <div className="highlights-grid">
+          {HIGHLIGHTS.map((h) => (
+            <div key={h.title} className="chart-card chart-card--small">
+              <h3>{h.title}</h3>
+              <p className="chart-desc">{h.desc}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section>
@@ -112,7 +114,8 @@ export default function MethodologyPage() {
         <p className="note">
           Cada tarea vive en <code>data/&lt;tarea&gt;.&lt;idioma&gt;.jsonl</code>, un objeto JSON por línea.
         </p>
-        <div className="table-wrap table-static">
+        <p className="table-hint">← desliza para ver más columnas →</p>
+        <div className="table-wrap table-wrap--methodology table-static">
           <table>
             <thead>
               <tr>
