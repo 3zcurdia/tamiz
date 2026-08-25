@@ -33,6 +33,8 @@ declare -A QUANTS=(
   ["qwen/qwen3.5-9b"]="q4_k_m"
   ["ornith-1.5-9b"]="q4_k_m"
   ["openai/gpt-oss-20b"]="mxfp4"
+  ["mistralai/mistral-7b-instruct-v0.3"]="q4_k_m"
+  ["microsoft/phi-4-mini-reasoning"]="q4_k_m"
 )
 
 # Measured sweet spot per model: aggregate tok/s on 64 translate rows at CTX above,
@@ -45,27 +47,31 @@ declare -A QUANTS=(
 #   gpt-oss-20b   64 -> 250 tok/s (MoE, ~3.6B active; still climbing at 64)
 declare -A PARALLEL=(
   ["qwen3.5-0.8b"]=16
-  ["google/gemma-4-e2b"]=32
-  ["google/gemma-4-e4b"]=32
-  ["ornith-1.5-9b"]=32
-  ["qwen/qwen3.5-9b"]=32
-  ["openai/gpt-oss-20b"]=64
+  ["google/gemma-4-e2b"]=8
+  ["google/gemma-4-e4b"]=8
+  ["ornith-1.5-9b"]=8
+  ["qwen/qwen3.5-9b"]=8
+  ["openai/gpt-oss-20b"]=8
+  ["mistralai/mistral-7b-instruct-v0.3"]=8
+  ["microsoft/phi-4-mini-reasoning"]=8
 )
 
 MODELS=(
-  "qwen3.5-0.8b"
-  "google/gemma-4-e4b"
-  "google/gemma-4-e2b"
+  # "qwen3.5-0.8b"
+  # "google/gemma-4-e4b"
+  # "google/gemma-4-e2b"
   # "bonsai-27b"
   # "nanbeige4.1-3b"
-  # "google/gemma-4-12b-qat"
-  # "laguna-xs-2.1"
-  "microsoft/phi-4"
+  "mistralai/mistral-7b-instruct-v0.3"
+  "google/gemma-4-12b-qat"
+  "laguna-xs-2.1"
+  # "microsoft/phi-4"
   # "qwen/qwen3.6-27b"
   # "qwen/qwen3.6-35b-a3b"
-  "ornith-1.5-9b"
-  "qwen/qwen3.5-9b"
-  "openai/gpt-oss-20b"
+  # "ornith-1.5-9b"
+  # "qwen/qwen3.5-9b"
+  # "openai/gpt-oss-20b"
+  microsoft/phi-4-mini-reasoning
 )
 
 mkdir -p "$LOG_DIR"
