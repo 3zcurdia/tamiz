@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SiteNav } from "./components/SiteNav";
 import "./globals.css";
@@ -18,9 +18,10 @@ export const metadata: Metadata = {
   description: "Resultados del benchmark de LLMs locales para tareas EN y ES",
 };
 
-export const viewport = {
+export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  themeColor: "#060a13",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

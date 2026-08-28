@@ -1,10 +1,6 @@
 import scores from "../results/scores.json";
-import { EnVsEsChart } from "./components/EnVsEsChart";
-import { SpanishGapChart } from "./components/SpanishGapChart";
-import { ModelBreakdown } from "./components/ModelBreakdown";
+import { EnVsEsChart, SpanishGapChart, ModelBreakdown, OverallScoreChart, SpeedVsAccuracyChart } from "./components/Charts";
 import { ScoresTable } from "./components/ScoresTable";
-import { OverallScoreChart } from "./components/OverallScoreChart";
-import { SpeedVsAccuracyChart } from "./components/SpeedVsAccuracyChart";
 
 const TASKS = ["qa_openbook", "commonsense_copa", "categorize", "translate"] as const;
 const TASK_LABELS: Record<string, string> = {
@@ -81,14 +77,17 @@ export default function Home() {
             {TASKS.map((task) => {
               const taskRecords = records.filter((r) => r.task === task);
               if (taskRecords.length === 0) return null;
+              const metric = taskRecords[0]?.metric ?? "";
+              const maxN = Math.max(...taskRecords.map((r) => r.n));
               return (
-                <EnVsEsChart
-                  key={task}
-                  task={task}
-                  label={TASK_LABELS[task]}
-                  description={TASK_DESCRIPTIONS[task]}
-                  records={taskRecords}
-                />
+                <div className="chart-card" key={task}>
+                  <h3>{TASK_LABELS[task]}</h3>
+                  <p className="chart-desc">{TASK_DESCRIPTIONS[task]}</p>
+                  <p className="chart-meta">
+                    metric: {metric} · n ≤ {maxN}
+                  </p>
+                  <EnVsEsChart records={taskRecords} />
+                </div>
               );
             })}
           </section>
@@ -114,13 +113,14 @@ export default function Home() {
             <h2>Desglose por modelo</h2>
             <div className="breakdown-grid">
               {models.map((model) => (
-                <ModelBreakdown
-                  key={model}
-                  model={model}
-                  records={records.filter((r) => r.model === model)}
-                  tasks={[...TASKS]}
-                  taskLabels={TASK_LABELS}
-                />
+                <div className="chart-card chart-card--small" key={model}>
+                  <h3 className="model-breakdown-title">{model}</h3>
+                  <ModelBreakdown
+                    records={records.filter((r) => r.model === model)}
+                    tasks={[...TASKS]}
+                    taskLabels={TASK_LABELS}
+                  />
+                </div>
               ))}
             </div>
           </section>

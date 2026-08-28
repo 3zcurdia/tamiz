@@ -445,3 +445,38 @@ code {
   cursor: default;
   user-select: auto;
 }
+
+.chart-skeleton {
+  border-radius: 4px;
+  background: linear-gradient(100deg, rgba(34, 211, 238, 0.05) 30%, rgba(167, 139, 250, 0.10) 50%, rgba(34, 211, 238, 0.05) 70%);
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  from { background-position: 200% 0 }
+  to { background-position: -200% 0 }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-skeleton {
+    animation: none;
+  }
+}
+
+.chart-skeleton--overall { height: 360px }
+.chart-skeleton--task { height: 300px }
+.chart-skeleton--speed { height: 360px }
+.chart-skeleton--breakdown { height: 200px }
+
+@media (max-width: 640px) {
+  .chart-skeleton--overall { height: 320px }
+  .chart-skeleton--task { height: 280px }
+  .chart-skeleton--speed { height: 300px }
+  .chart-skeleton--breakdown { height: 180px }
+}
+
+.breakdown-grid > * {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 260px;
+}

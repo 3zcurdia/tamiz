@@ -20,12 +20,10 @@ interface ScoreRecord {
 }
 
 export function ModelBreakdown({
-  model,
   records,
   tasks,
   taskLabels,
 }: {
-  model: string;
   records: ScoreRecord[];
   tasks: string[];
   taskLabels: Record<string, string>;
@@ -48,23 +46,20 @@ export function ModelBreakdown({
   if (data.length === 0) return null;
 
   return (
-    <div className="chart-card chart-card--small">
-      <h3 className="model-breakdown-title">{model}</h3>
-      <ResponsiveContainer width="100%" height={isMobile ? 180 : 200}>
-        <BarChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 5 }} barCategoryGap={BREAKDOWN_BAR_CATEGORY_GAP} barGap={BAR_GAP}>
-          <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
-          <XAxis dataKey="task" tick={{ fontSize: isMobile ? 10 : 11, fill: COLORS.tick }} stroke={COLORS.axis} interval={0} />
-          <YAxis domain={[0, 100]} tick={{ fontSize: isMobile ? 10 : 11, fill: COLORS.tick }} stroke={COLORS.axis} width={30} />
-          <Tooltip
-            contentStyle={TOOLTIP_STYLE.contentStyle}
-            labelStyle={TOOLTIP_STYLE.labelStyle}
-            itemStyle={TOOLTIP_STYLE.itemStyle}
-            cursor={{ fill: "rgba(34, 211, 238, 0.08)" }}
-          />
-          <Bar dataKey="en" fill={COLORS.en} name="EN" radius={[4, 4, 0, 0]} maxBarSize={40} />
-          <Bar dataKey="es" fill={COLORS.es} name="ES" radius={[4, 4, 0, 0]} maxBarSize={40} />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+    <ResponsiveContainer width="100%" height={isMobile ? 180 : 200}>
+      <BarChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 5 }} barCategoryGap={BREAKDOWN_BAR_CATEGORY_GAP} barGap={BAR_GAP}>
+        <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
+        <XAxis dataKey="task" tick={{ fontSize: isMobile ? 10 : 11, fill: COLORS.tick }} stroke={COLORS.axis} interval={0} />
+        <YAxis domain={[0, 100]} tick={{ fontSize: isMobile ? 10 : 11, fill: COLORS.tick }} stroke={COLORS.axis} width={30} />
+        <Tooltip
+          contentStyle={TOOLTIP_STYLE.contentStyle}
+          labelStyle={TOOLTIP_STYLE.labelStyle}
+          itemStyle={TOOLTIP_STYLE.itemStyle}
+          cursor={{ fill: "rgba(34, 211, 238, 0.08)" }}
+        />
+        <Bar dataKey="en" fill={COLORS.en} name="EN" radius={[4, 4, 0, 0]} maxBarSize={40} />
+        <Bar dataKey="es" fill={COLORS.es} name="ES" radius={[4, 4, 0, 0]} maxBarSize={40} />
+      </BarChart>
+    </ResponsiveContainer>
   );
 }
