@@ -480,3 +480,78 @@ code {
   content-visibility: auto;
   contain-intrinsic-size: auto 260px;
 }
+
+.axolotl-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 700px) {
+  .axolotl-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.axolotl-card {
+  margin-bottom: 0;
+}
+
+.axolotl-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.axolotl-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.axolotl-model {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.8rem;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  color: var(--cyan);
+}
+
+.axolotl-badge {
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  color: var(--muted);
+}
+
+.axolotl-badge--pi {
+  color: var(--purple);
+  border-color: rgba(167, 139, 250, 0.4);
+}
+
+.axolotl-badge--opencode {
+  color: var(--cyan);
+  border-color: rgba(34, 211, 238, 0.4);
+}
+
+.axolotl-meta {
+  color: var(--muted);
+  font-size: 0.78rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.25rem;
+}
+
+.axolotl-error {
+  color: #f87171;
+}

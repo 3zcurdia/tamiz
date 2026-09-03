@@ -57,3 +57,26 @@ itself also tests Spanish instruction-following.
 - `translate`: chrF++ or COMET against the reference.
 - `summarize`, `polish`: LLM-as-judge rubric (ROUGE is considered weak); keep the judge
   model fixed and stronger than the models under test.
+
+## Axolotl test (SVG generation via agent harnesses)
+
+Same-prompt visual benchmark in the spirit of "pelican riding a bicycle": every local
+LM Studio model gets the identical prompt through two agent harnesses (`opencode run`
+and `pi -p`) and must write its own SVG.
+
+```
+.venv/bin/python scripts/run_axolotl.py              # all models, both harnesses
+.venv/bin/python scripts/run_axolotl.py --model phi-4 --tool pi
+.venv/bin/python scripts/run_axolotl.py --force      # regenerate
+```
+
+- Prompt (identical for both harnesses): `Create a SVG file for a purple axolotl riding a
+  scooter and write it in a file <filename>.svg`
+- Output: `site/public/axolotl/<model-slug>-<harness>.svg` (e.g. `microsoft--phi-4-opencode.svg`,
+  `microsoft--phi-4-pi.svg`)
+- Manifest: `site/results/axolotl.json` (regenerated from the assets dir each run; the
+  `/axolotl` page renders whatever the manifest lists, so new models show up automatically)
+- Attempt log: `results/axolotl.jsonl`
+- Harness config is written by the script: `opencode.json` (`provider.lmstudio`) and
+  `.pi-agent-home/models.json` (repo-local pi config dir via `PI_CODING_AGENT_DIR`)
+- Publish: `cd site && npm run build`

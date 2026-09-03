@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const LINKS = [
   { href: "/", label: "Resultados" },
   { href: "/methodology", label: "Metodología" },
+  { href: "/axolotl", label: "Axolotl" },
 ];
 
 export function SiteNav() {

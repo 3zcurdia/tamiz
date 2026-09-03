@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <!-- Background -->
+  <rect width="400" height="400" fill="#f0e6ff" rx="20"/>
+  
+  <!-- Ground shadow -->
+  <ellipse cx="200" cy="340" rx="120" ry="12" fill="#d4b8e8" opacity="0.5"/>
+  
+  <!-- Scooter back wheel -->
+  <circle cx="130" cy="310" r="30" fill="#4a4a4a" stroke="#333" stroke-width="3"/>
+  <circle cx="130" cy="310" r="20" fill="#666" stroke="#555" stroke-width="2"/>
+  <circle cx="130" cy="310" r="6" fill="#888"/>
+  
+  <!-- Scooter front wheel -->
+  <circle cx="290" cy="310" r="30" fill="#4a4a4a" stroke="#333" stroke-width="3"/>
+  <circle cx="290" cy="310" r="20" fill="#666" stroke="#555" stroke-width="2"/>
+  <circle cx="290" cy="310" r="6" fill="#888"/>
+  
+  <!-- Scooter deck -->
+  <rect x="110" y="285" width="190" height="14" rx="7" fill="#7c3aed" stroke="#6d28d9" stroke-width="2"/>
+  <rect x="115" y="287" width="180" height="4" rx="2" fill="#8b5cf6" opacity="0.5"/>
+  
+  <!-- Scooter stem -->
+  <rect x="278" y="170" width="14" height="115" rx="5" fill="#6d28d9" stroke="#5b21b6" stroke-width="2"/>
+  
+  <!-- Handlebar -->
+  <path d="M240 175 Q240 165 250 165 L310 165 Q320 165 320 175" fill="none" stroke="#6d28d9" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="245" cy="170" r="8" fill="#8b5cf6" stroke="#7c3aed" stroke-width="2"/>
+  <circle cx="315" cy="170" r="8" fill="#8b5cf6" stroke="#7c3aed" stroke-width="2"/>
+  
+  <!-- Axolotl tail -->
+  <path d="M140 240 Q100 230 80 250 Q70 260 85 265 Q100 270 130 260" fill="#9333ea" stroke="#7c3aed" stroke-width="2"/>
+  <path d="M130 260 Q100 270 85 265 Q95 275 115 268 Q125 265 130 260" fill="#a855f7"/>
+  
+  <!-- Axolotl body -->
+  <ellipse cx="195" cy="230" rx="45" ry="55" fill="#9333ea" stroke="#7c3aed" stroke-width="2"/>
+  
+  <!-- Belly -->
+  <ellipse cx="200" cy="235" rx="28" ry="40" fill="#c084fc" opacity="0.6"/>
+  
+  <!-- Axolotl head -->
+  <ellipse cx="200" cy="155" rx="55" ry="42" fill="#9333ea" stroke="#7c3aed" stroke-width="2"/>
+  
+  <!-- Left gills -->
+  <path d="M150 130 Q120 110 100 105" fill="none" stroke="#e879a8" stroke-width="6" stroke-linecap="round"/>
+  <path d="M148 140 Q115 125 95 125" fill="none" stroke="#e879a8" stroke-width="6" stroke-linecap="round"/>
+  <path d="M148 150 Q118 145 100 150" fill="none" stroke="#e879a8" stroke-width="6" stroke-linecap="round"/>
+  <path d="M150 160 Q125 165 108 175" fill="none" stroke="#e879a8" stroke-width="6" stroke-linecap="round"/>
+  
+  <!-- Left gill feathery details -->
+  <path d="M115 112 L105 100" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M110 118 L98 108" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M105 128 L92 120" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M100 135 L88 130" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M112 148 L100 142" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M108 155 L95 152" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M115 165 L105 172" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M110 170 L100 178" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Right gills -->
+  <path d="M250 130 Q280 110 300 105" fill="none" stroke="#e879a8" stroke-width="6" stroke-linecap="round"/>
+  <path d="M252 140 Q285 125 305 125" fill="none" stroke="#e879a8" stroke-width="6" stroke-linecap="round"/>
+  <path d="M252 150 Q282 145 300 150" fill="none" stroke="#e879a8" stroke-width="6" stroke-linecap="round"/>
+  <path d="M250 160 Q275 165 292 175" fill="none" stroke="#e879a8" stroke-width="6" stroke-linecap="round"/>
+  
+  <!-- Right gill feathery details -->
+  <path d="M285 112 L295 100" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M290 118 L302 108" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M295 128 L308 120" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M300 135 L312 130" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M288 148 L300 142" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M292 155 L305 152" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M285 165 L295 172" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M290 170 L300 178" stroke="#f0a0c0" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Eyes -->
+  <ellipse cx="178" cy="150" rx="10" ry="12" fill="white"/>
+  <ellipse cx="222" cy="150" rx="10" ry="12" fill="white"/>
+  <ellipse cx="180" cy="152" rx="6" ry="7" fill="#1a1a2e"/>
+  <ellipse cx="224" cy="152" rx="6" ry="7" fill="#1a1a2e"/>
+  <circle cx="182" cy="149" r="2.5" fill="white"/>
+  <circle cx="226" cy="149" r="2.5" fill="white"/>
+  
+  <!-- Eyebrows -->
+  <path d="M168 138 Q178 132 188 138" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M212 138 Q222 132 232 138" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Blush -->
+  <ellipse cx="162" cy="165" rx="10" ry="6" fill="#f0a0c0" opacity="0.6"/>
+  <ellipse cx="238" cy="165" rx="10" ry="6" fill="#f0a0c0" opacity="0.6"/>
+  
+  <!-- Smile -->
+  <path d="M188 168 Q200 180 212 168" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Left arm reaching to handlebar -->
+  <path d="M175 210 Q160 195 170 180 Q180 170 200 172" fill="none" stroke="#9333ea" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="200" cy="172" r="7" fill="#a855f7" stroke="#9333ea" stroke-width="1.5"/>
+  
+  <!-- Right arm reaching to handlebar -->
+  <path d="M215 210 Q230 195 220 180 Q210 170 190 172" fill="none" stroke="#9333ea" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="190" cy="172" r="7" fill="#a855f7" stroke="#9333ea" stroke-width="1.5"/>
+  
+  <!-- Left leg on deck -->
+  <path d="M180 270 Q170 285 175 290" fill="none" stroke="#9333ea" stroke-width="14" stroke-linecap="round"/>
+  <ellipse cx="175" cy="292" rx="10" ry="6" fill="#a855f7" stroke="#9333ea" stroke-width="1.5"/>
+  
+  <!-- Right leg on deck -->
+  <path d="M210 270 Q220 285 215 290" fill="none" stroke="#9333ea" stroke-width="14" stroke-linecap="round"/>
+  <ellipse cx="215" cy="292" rx="10" ry="6" fill="#a855f7" stroke="#9333ea" stroke-width="1.5"/>
+  
+  <!-- Small sparkles -->
+  <circle cx="80" cy="80" r="3" fill="#c084fc" opacity="0.7"/>
+  <circle cx="320" cy="90" r="2.5" fill="#c084fc" opacity="0.7"/>
+  <circle cx="340" cy="200" r="2" fill="#c084fc" opacity="0.5"/>
+  <circle cx="60" cy="200" r="2.5" fill="#c084fc" opacity="0.5"/>
+  <circle cx="100" cy="350" r="2" fill="#c084fc" opacity="0.4"/>
+  <circle cx="300" cy="350" r="2" fill="#c084fc" opacity="0.4"/>
+</svg>

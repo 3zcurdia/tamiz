@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <title>Purple axolotl riding a scooter</title>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F2ECFF"/>
+      <stop offset="1" stop-color="#DCD1F4"/>
+    </linearGradient>
+  </defs>
+  <!-- Sky and ground -->
+  <rect width="400" height="360" fill="url(#sky)"/>
+  <rect y="356" width="400" height="44" fill="#CFC3EE"/>
+  <ellipse cx="212" cy="362" rx="150" ry="9" fill="#7A6BA8" opacity="0.25"/>
+  <!-- Clouds -->
+  <g fill="#FFFFFF" opacity="0.85">
+    <ellipse cx="62" cy="72" rx="19" ry="10"/>
+    <ellipse cx="80" cy="66" rx="16" ry="12"/>
+    <ellipse cx="95" cy="73" rx="14" ry="8"/>
+    <ellipse cx="316" cy="48" rx="16" ry="9"/>
+    <ellipse cx="331" cy="43" rx="13" ry="10"/>
+    <ellipse cx="345" cy="49" rx="12" ry="7"/>
+  </g>
+  <!-- Motion lines -->
+  <g stroke="#B9A6E3" stroke-width="5" stroke-linecap="round" opacity="0.8">
+    <line x1="18" y1="212" x2="52" y2="212"/>
+    <line x1="26" y1="240" x2="64" y2="240"/>
+    <line x1="18" y1="268" x2="52" y2="268"/>
+  </g>
+  <!-- Scooter rear wheel -->
+  <circle cx="105" cy="330" r="30" fill="#2B2432"/>
+  <circle cx="105" cy="330" r="13" fill="#6E5F8E"/>
+  <circle cx="105" cy="330" r="5" fill="#D8CDF2"/>
+  <!-- Scooter front wheel -->
+  <circle cx="320" cy="330" r="30" fill="#2B2432"/>
+  <circle cx="320" cy="330" r="13" fill="#6E5F8E"/>
+  <circle cx="320" cy="330" r="5" fill="#D8CDF2"/>
+  <!-- Rear fender -->
+  <path d="M77 320 A30 30 0 0 1 133 320" fill="none" stroke="#554B70" stroke-width="8" stroke-linecap="round"/>
+  <!-- Deck -->
+  <rect x="88" y="302" width="248" height="13" rx="6.5" fill="#3A3245"/>
+  <!-- Stem -->
+  <rect x="314" y="168" width="12" height="150" rx="6" fill="#3A3245"/>
+  <!-- Handlebar and grips -->
+  <rect x="276" y="162" width="92" height="11" rx="5.5" fill="#3A3245"/>
+  <rect x="270" y="159" width="17" height="17" rx="8" fill="#2B2432"/>
+  <rect x="357" y="159" width="17" height="17" rx="8" fill="#2B2432"/>
+  <!-- Bell -->
+  <circle cx="298" cy="177" r="6" fill="#FFD54F"/>
+  <circle cx="296" cy="175" r="2" fill="#E6A93C"/>
+  <!-- Axolotl tail -->
+  <path d="M138 272 Q104 300 80 290 Q62 280 70 262" fill="none" stroke="#8E44AD" stroke-width="15" stroke-linecap="round"/>
+  <path d="M126 276 Q104 292 88 288" fill="none" stroke="#B57EDC" stroke-width="5" stroke-linecap="round"/>
+  <!-- Axolotl body -->
+  <ellipse cx="185" cy="252" rx="58" ry="47" fill="#9B59B6"/>
+  <ellipse cx="192" cy="266" rx="36" ry="26" fill="#B57EDC" opacity="0.75"/>
+  <g fill="#8E44AD" opacity="0.6">
+    <circle cx="160" cy="238" r="4"/>
+    <circle cx="205" cy="230" r="3.5"/>
+    <circle cx="222" cy="256" r="4"/>
+  </g>
+  <!-- Back feet on deck -->
+  <ellipse cx="150" cy="297" rx="16" ry="9" fill="#8E44AD"/>
+  <ellipse cx="212" cy="297" rx="16" ry="9" fill="#8E44AD"/>
+  <!-- Axolotl head -->
+  <ellipse cx="193" cy="172" rx="53" ry="45" fill="#9B59B6"/>
+  <!-- Face -->
+  <circle cx="186" cy="178" r="1.8" fill="#241636"/>
+  <circle cx="200" cy="178" r="1.8" fill="#241636"/>
+  <circle cx="172" cy="166" r="9" fill="#241636"/>
+  <circle cx="214" cy="166" r="9" fill="#241636"/>
+  <circle cx="175" cy="163" r="3.2" fill="#FFFFFF"/>
+  <circle cx="217" cy="163" r="3.2" fill="#FFFFFF"/>
+  <ellipse cx="152" cy="188" rx="10" ry="6" fill="#D488B8" opacity="0.55"/>
+  <ellipse cx="234" cy="188" rx="10" ry="6" fill="#D488B8" opacity="0.55"/>
+  <path d="M177 190 Q193 205 209 190" fill="none" stroke="#241636" stroke-width="3" stroke-linecap="round"/>
+  <!-- Left gills -->
+  <g fill="none" stroke="#F06292" stroke-linecap="round">
+    <path d="M152 142 Q134 124 120 105" stroke-width="5"/>
+    <path d="M132 126 Q127 114 126 102" stroke-width="3"/>
+    <path d="M138 132 Q128 127 118 126" stroke-width="3"/>
+    <path d="M144 170 Q122 166 104 162" stroke-width="5"/>
+    <path d="M124 167 Q116 158 112 147" stroke-width="3"/>
+    <path d="M126 166 Q117 168 107 170" stroke-width="3"/>
+    <path d="M148 196 Q126 205 110 214" stroke-width="5"/>
+    <path d="M128 203 Q122 193 121 182" stroke-width="3"/>
+    <path d="M130 205 Q121 210 111 214" stroke-width="3"/>
+  </g>
+  <!-- Right gills -->
+  <g fill="none" stroke="#F06292" stroke-linecap="round">
+    <path d="M234 142 Q252 124 266 105" stroke-width="5"/>
+    <path d="M254 126 Q259 114 260 102" stroke-width="3"/>
+    <path d="M248 132 Q258 127 268 126" stroke-width="3"/>
+    <path d="M242 168 Q262 160 274 148" stroke-width="5"/>
+    <path d="M260 160 Q268 152 273 142" stroke-width="3"/>
+    <path d="M256 164 Q264 162 272 164" stroke-width="3"/>
+    <path d="M238 196 Q260 205 276 214" stroke-width="5"/>
+    <path d="M258 203 Q264 193 265 182" stroke-width="3"/>
+    <path d="M256 205 Q265 210 275 214" stroke-width="3"/>
+  </g>
+  <!-- Arms to handlebar -->
+  <path d="M228 232 Q256 206 281 176" fill="none" stroke="#9B59B6" stroke-width="14" stroke-linecap="round"/>
+  <path d="M238 246 Q305 222 362 176" fill="none" stroke="#9B59B6" stroke-width="14" stroke-linecap="round"/>
+  <!-- Paws on grips -->
+  <ellipse cx="282" cy="170" rx="13" ry="9" fill="#8E44AD"/>
+  <ellipse cx="364" cy="170" rx="13" ry="9" fill="#8E44AD"/>
+</svg>

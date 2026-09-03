@@ -1,0 +1,62 @@
+{
+  "test": "axolotl",
+  "prompt": "Create an SVG for a purple axolotl riding a scooter. Output ONLY the raw SVG code, no markdown, no explanation, starting with <svg and ending with </svg>.",
+  "updated_at": "2026-09-03T01:47:08Z",
+  "items": [
+    {
+      "model": "opencode-go/glm-5.3",
+      "harness": "opencode",
+      "slug": "glm-5-3",
+      "file": "/axolotl/glm-5-3.svg",
+      "bytes": 5221,
+      "xml_ok": true,
+      "error": null,
+      "latency_ms": null,
+      "generated_at": "2026-09-03T01:34:41Z"
+    },
+    {
+      "model": "opencode-go/qwen3.8-max",
+      "harness": "opencode",
+      "slug": "qwen-3-8-max",
+      "file": "/axolotl/qwen-3-8-max.svg",
+      "bytes": 3103,
+      "xml_ok": true,
+      "error": null,
+      "latency_ms": null,
+      "generated_at": "2026-09-03T01:47:08Z"
+    },
+    {
+      "model": "qwen/qwen3.6-27b",
+      "harness": "direct",
+      "slug": "qwen--qwen3.6-27b",
+      "file": "/axolotl/qwen--qwen3.6-27b.svg",
+      "bytes": 6773,
+      "xml_ok": true,
+      "error": null,
+      "latency_ms": 481671,
+      "generated_at": "2026-09-03T01:06:27Z"
+    },
+    {
+      "model": "qwen/qwen3.6-35b-a3b",
+      "harness": "opencode",
+      "slug": "qwen--qwen3.6-35b-a3b",
+      "file": "/axolotl/qwen--qwen3.6-35b-a3b-opencode.svg",
+      "bytes": 7403,
+      "xml_ok": true,
+      "error": null,
+      "latency_ms": 284748,
+      "generated_at": "2026-08-31T04:50:35Z"
+    },
+    {
+      "model": "qwen/qwen3.8-27b",
+      "harness": "direct",
+      "slug": "qwen--qwen3.8-27b",
+      "file": "/axolotl/qwen--qwen3.8-27b.svg",
+      "bytes": 4467,
+      "xml_ok": true,
+      "error": null,
+      "latency_ms": 335544,
+      "generated_at": "2026-09-03T01:17:05Z"
+    }
+  ]
+}
