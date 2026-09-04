@@ -31,6 +31,7 @@ import requests  # noqa: E402
 
 BASE_URL = "http://localhost:1234/v1"
 TARGET_MODELS = [
+    "google/gemma-4-12b-qat",
     "qwen/qwen3.6-27b",
     "qwen/qwen3.6-35b-a3b",
     "qwen/qwen3.8-27b",
@@ -149,6 +150,11 @@ def call_lmstudio(
         "stream": False,
         "reasoning_effort": "low",
     }
+
+    def extract(data: dict) -> str:
+        msg = data.get("choices", [{}])[0].get("message", {})
+        return msg.get("content") or msg.get("text") or ""
+
     try:
         r = requests.post(f"{base_url}/chat/completions", json=payload, timeout=timeout)
         if r.status_code == 400 and "reasoning" in r.text.lower():
@@ -160,9 +166,15 @@ def call_lmstudio(
         if r.status_code >= 400:
             return None, f"http_{r.status_code}: {r.text[:600]}", latency_ms
         data = r.json()
-        content = data["choices"][0].get("message", {}).get("content", "") or ""
-        if not content and "choices" in data:
-            content = data["choices"][0].get("text", "") or ""
+        content = extract(data)
+        if not content:
+            payload["reasoning_effort"] = "none"
+            r = requests.post(
+                f"{base_url}/chat/completions", json=payload, timeout=timeout
+            )
+            latency_ms = int((time.perf_counter() - t0) * 1000)
+            if r.status_code < 400:
+                content = extract(r.json())
         return content, "", latency_ms
     except Exception as e:
         latency_ms = int((time.perf_counter() - t0) * 1000)

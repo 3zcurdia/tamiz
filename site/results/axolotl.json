@@ -1,7 +1,7 @@
 {
   "test": "axolotl",
   "prompt": "Create an SVG for a purple axolotl riding a scooter. Output ONLY the raw SVG code, no markdown, no explanation, starting with <svg and ending with </svg>.",
-  "updated_at": "2026-09-03T01:47:08Z",
+  "updated_at": "2026-09-04T04:27:01Z",
   "items": [
     {
       "model": "opencode-go/glm-5.3",
@@ -26,6 +26,17 @@
       "generated_at": "2026-09-03T01:47:08Z"
     },
     {
+      "model": "qwen/qwen3.8-27b",
+      "harness": "direct",
+      "slug": "qwen--qwen3.8-27b",
+      "file": "/axolotl/qwen--qwen3.8-27b.svg",
+      "bytes": 4467,
+      "xml_ok": true,
+      "error": null,
+      "latency_ms": 335544,
+      "generated_at": "2026-09-03T01:17:05Z"
+    },
+    {
       "model": "qwen/qwen3.6-27b",
       "harness": "direct",
       "slug": "qwen--qwen3.6-27b",
@@ -48,15 +59,15 @@
       "generated_at": "2026-08-31T04:50:35Z"
     },
     {
-      "model": "qwen/qwen3.8-27b",
+      "model": "google/gemma-4-12b-qat",
       "harness": "direct",
-      "slug": "qwen--qwen3.8-27b",
-      "file": "/axolotl/qwen--qwen3.8-27b.svg",
-      "bytes": 4467,
+      "slug": "google--gemma-4-12b-qat",
+      "file": "/axolotl/google--gemma-4-12b-qat.svg",
+      "bytes": 1477,
       "xml_ok": true,
       "error": null,
-      "latency_ms": 335544,
-      "generated_at": "2026-09-03T01:17:05Z"
+      "latency_ms": 172678,
+      "generated_at": "2026-09-04T00:27:41Z"
     }
   ]
 }

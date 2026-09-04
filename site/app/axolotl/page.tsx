@@ -20,6 +20,7 @@ interface AxolotlItem {
 }
 
 const KEEP_MODELS = new Set([
+  "google/gemma-4-12b-qat",
   "opencode-go/glm-5.3",
   "opencode-go/qwen3.8-max",
   "qwen/qwen3.6-27b",

@@ -49,3 +49,4 @@
 {"generated_at": "2026-09-03T01:17:05Z", "model": "qwen/qwen3.8-27b", "harness": "direct", "slug": "qwen--qwen3.8-27b", "file": "qwen--qwen3.8-27b.svg", "latency_ms": 335544, "error": null, "xml_ok": true, "bytes": 4467}
 {"generated_at": "2026-09-03T01:34:41Z", "model": "opencode-go/glm-5.3", "harness": "opencode", "slug": "glm-5-3", "file": "glm-5-3.svg", "latency_ms": null, "error": null, "xml_ok": true, "bytes": 5221}
 {"generated_at": "2026-09-03T01:47:08Z", "model": "opencode-go/qwen3.8-max", "harness": "opencode", "slug": "qwen-3-8-max", "file": "qwen-3-8-max.svg", "latency_ms": null, "error": null, "xml_ok": true, "bytes": 3103}
+{"generated_at": "2026-09-04T00:27:41Z", "model": "google/gemma-4-12b-qat", "harness": "direct", "slug": "google--gemma-4-12b-qat", "file": "google--gemma-4-12b-qat.svg", "latency_ms": 172678, "error": null, "xml_ok": true, "bytes": 1477}

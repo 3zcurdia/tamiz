@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Scooter -->
+  <rect x="60" y="140" width="80" height="15" rx="5" fill="#333" />
+  <circle cx="70" cy="155" r="15" fill="#555" />
+  <circle cx="140" cy="155" r="15" fill="#555" />
+  <rect x="110" y="120" width="10" height="30" fill="#777" />
+  <rect x="100" y="110" width="30" height="10" fill="#777" />
+  <rect x="120" y="130" width="5" height="20" fill="#999" />
+  
+  <!-- Axolotl Body -->
+  <ellipse cx="100" cy="100" rx="40" ry="30" fill="#a855f7" />
+  <ellipse cx="130" cy="90" rx="25" ry="20" fill="#a855f7" />
+  
+  <!-- Axolotl Head -->
+  <circle cx="70" cy="80" r="25" fill="#a855f7" />
+  <circle cx="60" cy="75" r="5" fill="white" /> <!-- Eye -->
+  <circle cx="65" cy="75" r="2" fill="black" />
+  
+  <!-- Gills -->
+  <path d="M45,70 Q35,60 45,50" stroke="#f472b6" stroke-width="4" fill="none" />
+  <path d="M45,80 Q35,70 45,60" stroke="#f472b6" stroke-width="4" fill="none" />
+  <path d="M45,90 Q35,80 45,70" stroke="#f472b6" stroke-width="4" fill="none" />
+  
+  <!-- Tail -->
+  <path d="M135,110 Q160,120 150,140 Q130,130 130,115" fill="#a855f7" />
+  
+  <!-- Arms/Legs -->
+  <path d="M80,110 Q70,130 85,140" stroke="#a855f7" stroke-width="8" fill="none" stroke-linecap="round" />
+  <path d="M120,110 Q130,130 115,140" stroke="#a855f7" stroke-width="8" fill="none" stroke-linecap="round" />
+  
+  <!-- Smile -->
+  <path d="M60,85 Q65,90 70,85" stroke="black" stroke-width="1.5" fill="none" />
+</svg>
