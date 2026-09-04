@@ -36,7 +36,7 @@ TARGET_MODELS = [
     "qwen/qwen3.6-35b-a3b",
     "qwen/qwen3.8-27b",
 ]
-LOAD_CTX = 20000
+LOAD_CTX = 30000
 MAX_TOKENS = 4096
 
 ASSETS_DIR = ROOT / "site" / "public" / "axolotl"
@@ -148,7 +148,7 @@ def call_lmstudio(
         "temperature": 0,
         "max_tokens": MAX_TOKENS,
         "stream": False,
-        "reasoning_effort": "low",
+        "reasoning_effort": "high",
     }
 
     def extract(data: dict) -> str:
@@ -328,7 +328,7 @@ def main() -> None:
     ap.add_argument("--force", action="store_true", help="regenerate existing SVGs")
     ap.add_argument("--keep-loaded", action="store_true", help="do not unload models")
     ap.add_argument(
-        "--timeout", type=int, default=900, help="per-model API timeout seconds"
+        "--timeout", type=int, default=1200, help="per-model API timeout seconds"
     )
     ap.add_argument("--list", action="store_true", help="list models and exit")
     args = ap.parse_args()
