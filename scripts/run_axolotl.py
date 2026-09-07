@@ -8,7 +8,6 @@ regenerates the manifest consumed by the /axolotl page.
 Usage:
     python scripts/run_axolotl.py                  # target models (page set + qwen3.8-27b)
     python scripts/run_axolotl.py --model qwen3.8  # substring filter, repeatable
-    python scripts/run_axolotl.py --force          # regenerate existing SVGs
     python scripts/run_axolotl.py --list           # just list discovered/target models
 """
 
@@ -325,7 +324,6 @@ def main() -> None:
         default=None,
         help="substring filter on model id; repeatable",
     )
-    ap.add_argument("--force", action="store_true", help="regenerate existing SVGs")
     ap.add_argument("--keep-loaded", action="store_true", help="do not unload models")
     ap.add_argument(
         "--timeout", type=int, default=1200, help="per-model API timeout seconds"
@@ -367,15 +365,11 @@ def main() -> None:
     ASSETS_DIR.mkdir(parents=True, exist_ok=True)
     LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-    done = failed = skipped = 0
+    done = failed = 0
     for i, model in enumerate(models, 1):
         print(f"\n[{i}/{len(models)}] {model}")
         ensure_loaded(model, base)
         fname = filename_for(model)
-        if (ASSETS_DIR / fname).exists() and not args.force:
-            print(f"  direct: skip ({fname} exists)")
-            skipped += 1
-            continue
         print(f"  direct: generating {fname} ...", flush=True)
         rec = generate(model, base, args.timeout)
         with open(LOG_PATH, "a", encoding="utf-8") as f:
@@ -391,7 +385,7 @@ def main() -> None:
 
     n = build_manifest()
     print(
-        f"\nDone. ok={done} failed={failed} skipped={skipped} manifest={MANIFEST_PATH} ({n} items)"
+        f"\nDone. ok={done} failed={failed} manifest={MANIFEST_PATH} ({n} items)"
     )
     print("Publish with: cd site && npm run build")
 

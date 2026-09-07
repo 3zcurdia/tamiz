@@ -67,7 +67,7 @@ and `pi -p`) and must write its own SVG.
 ```
 .venv/bin/python scripts/run_axolotl.py              # all models, both harnesses
 .venv/bin/python scripts/run_axolotl.py --model phi-4 --tool pi
-.venv/bin/python scripts/run_axolotl.py --force      # regenerate
+.venv/bin/python scripts/run_axolotl.py              # regenerates existing SVGs
 ```
 
 - Prompt (identical for both harnesses): `Create a SVG file for a purple axolotl riding a
